@@ -4,7 +4,7 @@ const oracledb = require('oracledb');
 
 
 
-const baseQuery = "select * from cart";
+const baseQuery = "select * from cart_content_history";
  
 async function find(context) {
   let query = baseQuery;
@@ -24,16 +24,16 @@ async function find(context) {
 module.exports.find = find;
 
 
-
-const procedure_new_cart = `
+/*
+const procedure_new_content = `
     BEGIN
-        new_cart_byID(:client_id, to_timestamp(:create_date, 'yyyy/mm/dd hh24:mi:ss'), :cart_status_id);
+        INSERT INTO cart_content_history VALUES ();
     END;
     `;
  
 async function create(emp) {
-  const new_cart = Object.assign({}, emp);
-    console.log(new_cart);
+  const new_content = Object.assign({}, emp);
+    console.log(new_content);
 
 
 //   new_client.id = {
@@ -41,35 +41,29 @@ async function create(emp) {
 //     type: oracledb.INTEGER
 //   }
  
-  const result = await database.simpleExecute(procedure_new_cart, new_cart);
+  const result = await database.simpleExecute(procedure_new_content, new_content);
  
 //   new_client.id = result.outBinds.id[0];
  
-  return new_cart;
+  return new_content;
 }
  
 module.exports.create = create;
 
-// const updateSql =
-//  `update cart
-//   set client_id = :client_id,
-//     create_date = to_timestamp(:create_date, 'yyyy/mm/dd hh24:mi:ss'),
-//     cart_status_id = :cart_status_id
-//   where id = :id`;
- 
 const updateSql =
- `BEGIN
-    cancel_cart_byID(:id, :client_id, to_timestamp(:create_date, 'yyyy/mm/dd hh24:mi:ss'), :cart_status_id);
- END;`;
-
-
+ `update cart_content
+  set quantity = :quantity,
+    product_id = :product_id,
+    cart_id = :cart_id
+  where id = :id`;
+ 
 async function update(emp) {
-  const new_cart = Object.assign({}, emp);
-  console.log(new_cart);
-  const result = await database.simpleExecute(updateSql, new_cart);
+  const new_content = Object.assign({}, emp);
+  console.log(new_content);
+  const result = await database.simpleExecute(updateSql, new_content);
  
   if (result.rowsAffected && result.rowsAffected === 1) {
-    return new_cart;
+    return new_content;
   } else {
     return null;
   }
@@ -77,12 +71,15 @@ async function update(emp) {
  
 module.exports.update = update;
 
+
+*/
+
 const deleteSql =
  `begin
 
-    delete from cart_content where cart_id = :id;
+    delete from ord_item where cart_content_history_id = :id;
 
-    delete from cart
+    delete from cart_content_history
     where id = :id;
 
     :rowcount := sql%rowcount;

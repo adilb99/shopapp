@@ -4,7 +4,7 @@ const oracledb = require('oracledb');
 
 
 
-const baseQuery = "select * from cart";
+const baseQuery = "select * from review";
  
 async function find(context) {
   let query = baseQuery;
@@ -25,15 +25,15 @@ module.exports.find = find;
 
 
 
-const procedure_new_cart = `
+const createSql = `
     BEGIN
-        new_cart_byID(:client_id, to_timestamp(:create_date, 'yyyy/mm/dd hh24:mi:ss'), :cart_status_id);
+        new_review_byID(:client_id, :product_id, :rating, :title, :text);
     END;
     `;
  
 async function create(emp) {
-  const new_cart = Object.assign({}, emp);
-    console.log(new_cart);
+  const new_review = Object.assign({}, emp);
+    console.log(new_review);
 
 
 //   new_client.id = {
@@ -41,35 +41,39 @@ async function create(emp) {
 //     type: oracledb.INTEGER
 //   }
  
-  const result = await database.simpleExecute(procedure_new_cart, new_cart);
+  const result = await database.simpleExecute(createSql, new_review);
  
 //   new_client.id = result.outBinds.id[0];
  
-  return new_cart;
+  return new_review;
 }
  
 module.exports.create = create;
 
-// const updateSql =
-//  `update cart
-//   set client_id = :client_id,
-//     create_date = to_timestamp(:create_date, 'yyyy/mm/dd hh24:mi:ss'),
-//     cart_status_id = :cart_status_id
-//   where id = :id`;
- 
 const updateSql =
  `BEGIN
-    cancel_cart_byID(:id, :client_id, to_timestamp(:create_date, 'yyyy/mm/dd hh24:mi:ss'), :cart_status_id);
+ 
+    update review
+    set client_id = :client_id,
+        product_id = :product_id,
+        rating = :rating,
+        title = :title,
+        text = :text
+        where id = :id;
+
+    UPDATE product 
+    SET rating = (SELECT SUM(rating) FROM review WHERE product_id = :product_id) / (SELECT COUNT(rating) FROM review WHERE product_id = :product_id) 
+    WHERE id = :product_id;
+
  END;`;
-
-
+ 
 async function update(emp) {
-  const new_cart = Object.assign({}, emp);
-  console.log(new_cart);
-  const result = await database.simpleExecute(updateSql, new_cart);
+  const new_review = Object.assign({}, emp);
+  console.log(new_review);
+  const result = await database.simpleExecute(updateSql, new_review);
  
   if (result.rowsAffected && result.rowsAffected === 1) {
-    return new_cart;
+    return new_review;
   } else {
     return null;
   }
@@ -78,12 +82,19 @@ async function update(emp) {
 module.exports.update = update;
 
 const deleteSql =
- `begin
+ `
+ declare
+ pr_id integer;
+ begin
+    
+    select product_id into pr_id from review where id = :id; 
 
-    delete from cart_content where cart_id = :id;
-
-    delete from cart
+    delete from review
     where id = :id;
+
+    UPDATE product 
+    SET rating = (SELECT SUM(rating) FROM review WHERE product_id = pr_id) / (SELECT COUNT(rating) FROM review WHERE product_id = pr_id) 
+    WHERE id = pr_id;
 
     :rowcount := sql%rowcount;
  

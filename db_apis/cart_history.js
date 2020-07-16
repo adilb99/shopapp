@@ -4,7 +4,7 @@ const oracledb = require('oracledb');
 
 
 
-const baseQuery = "select * from cart";
+const baseQuery = "select * from cart_history";
  
 async function find(context) {
   let query = baseQuery;
@@ -24,6 +24,7 @@ async function find(context) {
 module.exports.find = find;
 
 
+/*
 
 const procedure_new_cart = `
     BEGIN
@@ -35,31 +36,24 @@ async function create(emp) {
   const new_cart = Object.assign({}, emp);
     console.log(new_cart);
 
-
-//   new_client.id = {
-//     dir: oracledb.BIND_OUT,
-//     type: oracledb.INTEGER
-//   }
  
   const result = await database.simpleExecute(procedure_new_cart, new_cart);
  
-//   new_client.id = result.outBinds.id[0];
  
   return new_cart;
 }
  
 module.exports.create = create;
 
-// const updateSql =
-//  `update cart
-//   set client_id = :client_id,
-//     create_date = to_timestamp(:create_date, 'yyyy/mm/dd hh24:mi:ss'),
-//     cart_status_id = :cart_status_id
-//   where id = :id`;
- 
+
+
+
+
 const updateSql =
  `BEGIN
-    cancel_cart_byID(:id, :client_id, to_timestamp(:create_date, 'yyyy/mm/dd hh24:mi:ss'), :cart_status_id);
+    
+    UPDATE cart_history
+
  END;`;
 
 
@@ -77,12 +71,19 @@ async function update(emp) {
  
 module.exports.update = update;
 
+*/
+
+
 const deleteSql =
  `begin
 
-    delete from cart_content where cart_id = :id;
+    delete from ord_item where cart_content_history_id in (select id from cart_content_history where cart_history_id = :id);
 
-    delete from cart
+    delete from ord where cart_history_id = :id;
+
+    delete from cart_content_history where cart_history_id = :id;
+
+    delete from cart_history
     where id = :id;
 
     :rowcount := sql%rowcount;

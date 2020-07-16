@@ -4,7 +4,7 @@ const oracledb = require('oracledb');
 
 
 
-const baseQuery = "select * from cart";
+const baseQuery = "select * from cart_status";
  
 async function find(context) {
   let query = baseQuery;
@@ -25,15 +25,15 @@ module.exports.find = find;
 
 
 
-const procedure_new_cart = `
+const createSql = `
     BEGIN
-        new_cart_byID(:client_id, to_timestamp(:create_date, 'yyyy/mm/dd hh24:mi:ss'), :cart_status_id);
+        INSERT INTO cart_status VALUES (seq_cart_status.NEXTVAL, :name);
     END;
     `;
  
 async function create(emp) {
-  const new_cart = Object.assign({}, emp);
-    console.log(new_cart);
+  const new_status = Object.assign({}, emp);
+    console.log(new_status);
 
 
 //   new_client.id = {
@@ -41,35 +41,31 @@ async function create(emp) {
 //     type: oracledb.INTEGER
 //   }
  
-  const result = await database.simpleExecute(procedure_new_cart, new_cart);
+  const result = await database.simpleExecute(createSql, new_status);
  
 //   new_client.id = result.outBinds.id[0];
  
-  return new_cart;
+  return new_status;
 }
  
 module.exports.create = create;
 
-// const updateSql =
-//  `update cart
-//   set client_id = :client_id,
-//     create_date = to_timestamp(:create_date, 'yyyy/mm/dd hh24:mi:ss'),
-//     cart_status_id = :cart_status_id
-//   where id = :id`;
- 
 const updateSql =
  `BEGIN
-    cancel_cart_byID(:id, :client_id, to_timestamp(:create_date, 'yyyy/mm/dd hh24:mi:ss'), :cart_status_id);
+    
+    if :name != 'unknown' then
+        UPDATE cart_status SET name = :name WHERE id = :id;
+    end if;
+
  END;`;
-
-
+ 
 async function update(emp) {
-  const new_cart = Object.assign({}, emp);
-  console.log(new_cart);
-  const result = await database.simpleExecute(updateSql, new_cart);
+  const new_status = Object.assign({}, emp);
+  console.log(new_status);
+  const result = await database.simpleExecute(updateSql, new_status);
  
   if (result.rowsAffected && result.rowsAffected === 1) {
-    return new_cart;
+    return new_status;
   } else {
     return null;
   }
@@ -78,15 +74,19 @@ async function update(emp) {
 module.exports.update = update;
 
 const deleteSql =
- `begin
+ `
+ begin
+ 
+ if (select name from cart_status where id = :id) != 'unknown' then
+    UPDATE cart SET cart_status_id = (SELECT id FROM cart_status WHERE name = 'unknown') WHERE cart_status_id = :id;
 
-    delete from cart_content where cart_id = :id;
+    UPDATE cart_history SET cart_status_id = (SELECT id FROM cart_status WHERE name = 'unknown') WHERE cart_status_id = :id;
 
-    delete from cart
-    where id = :id;
+    DELETE FROM cart_status WHERE id = :id;
 
     :rowcount := sql%rowcount;
- 
+ end if;
+
   end;`
  
 async function del(id) {
