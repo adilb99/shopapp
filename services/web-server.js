@@ -25,7 +25,7 @@ function initialize() {
     httpServer.listen(webServerConfig.port)
       .on('listening', () => {
         console.log(`Web server listening on localhost:${webServerConfig.port}`);
-        
+        // module.exports.httpServer = httpServer;
         resolve();
       })
       .on('error', err => {

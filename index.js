@@ -91,3 +91,5 @@ process.on('uncaughtException', err => {
   shutdown(err);
 });
 
+module.exports.startup = startup;
+module.exports.shutdown = shutdown;
