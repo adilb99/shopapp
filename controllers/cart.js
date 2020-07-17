@@ -60,7 +60,7 @@ function getCartFromRec(req) {
     try {
       let new_cart = getCartFromRec(req);
    
-      new_cart.id = parseInt(req.query.id, 10);
+      new_cart.id = parseInt(req.params.id, 10);
       
       new_cart = await cart.update(new_cart);
    
@@ -78,7 +78,7 @@ function getCartFromRec(req) {
 
   async function del(req, res, next) {
     try {
-      const id = parseInt(req.query.id, 10);
+      const id = parseInt(req.params.id, 10);
    
       const success = await cart.delete(id);
    

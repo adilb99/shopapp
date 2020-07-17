@@ -58,7 +58,7 @@ function getCategFromRec(req) {
     try {
       let new_categ = getCategFromRec(req);
    
-      new_categ.id = parseInt(req.query.id, 10);
+      new_categ.id = parseInt(req.params.id, 10);
       
       new_categ = await categ.update(new_categ);
    
@@ -76,7 +76,7 @@ function getCategFromRec(req) {
 
   async function del(req, res, next) {
     try {
-      const id = parseInt(req.query.id, 10);
+      const id = parseInt(req.params.id, 10);
    
       const success = await categ.delete(id);
    

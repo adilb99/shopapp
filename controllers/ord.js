@@ -97,7 +97,7 @@ function getEntryFromRec(req) {
     try {
       let new_entry = getEntryFromRec_put(req);
    
-      new_entry.id = parseInt(req.query.id, 10);
+      new_entry.id = parseInt(req.params.id, 10);
       
       new_entry = await table.update(new_entry);
    

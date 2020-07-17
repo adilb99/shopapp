@@ -27,7 +27,7 @@ module.exports.find = find;
 
 const procedure_new_manuf = `
     BEGIN
-        new_manuf(:name, :descr, :logourl);
+        new_manuf(:name, :descr, :logo_url);
     END;
     `;
  
@@ -54,7 +54,7 @@ const updateSql =
  `update manufacturer
   set name = :name,
     descr = :descr,
-    logo_url = :logourl
+    logo_url = :logo_url
   where id = :id`;
  
 async function update(emp) {

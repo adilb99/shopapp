@@ -14,6 +14,9 @@ const cart_status = require('../controllers/cart_status.js');
 const cart_history = require('../controllers/cart_history.js');
 const cart_content_history = require('../controllers/cart_content_history.js');
 const ord_item = require('../controllers/ord_item.js');
+const address = require('../controllers/address.js');
+const sequence = require('../controllers/sequence.js');
+
 
 
 router.route('/client/:id?')
@@ -102,6 +105,13 @@ router.route('/cart_content_history/:id?')
 router.route('/ord_item/:id?')
     .get(ord_item.get)
     .delete(ord_item.delete);
+
+router.route('/address/:id?')
+    .get(address.get);
+
+
+router.route('/sequence/:sequence_name?')
+    .get(sequence.get);
 
 
 module.exports = router;

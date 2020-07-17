@@ -7,15 +7,19 @@ const bodyParser = require('body-parser');
 
 const app = 'http://192.168.99.100:3000';
 
-// const express = require('express');
-// const app = express();
-
-// app.use(bodyParser.urlencoded());
-// app.use(bodyParser.json());
-
-// app.listen(3000, '192.168.99.100');
 
 /*  FUNCTIONS (FOR LESS DUPLICATION):   */
+
+function isNumeric(n) {
+    if(!isNaN(parseFloat(n)) && isFinite(n)){
+        return parseInt(n, 10);
+    } else if(!isNaN(Date.parse(n))) {
+        if(n.length == 10) return n.concat('T00:00:00.000Z').replaceAll('/', '-');
+        else return n.concat('.000Z').replace(' ', 'T').replaceAll('/', '-');
+    }
+    else return n;
+  
+}
 
 function testGET(url, id, expected) {
     describe('GET /'.concat(url), function () {
@@ -51,6 +55,160 @@ function testGET(url, id, expected) {
     
     
       });
+}
+
+function testPOST(url, data) {
+    describe('POST /'.concat(url), function() {
+        it('POST new '.concat(url), function(done) {
+            request(app)
+                .post('/api/'.concat(url))
+                .send(data)
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(201)
+                .expect(data)
+                .end(function(err, res) {
+                    if (err){
+                        // console.log(res);
+                        return done(err);
+                    }
+                    
+                    
+                    done();
+                });
+        });
+
+        /* ----------  */
+
+        var getID;
+        var newURL;
+        if(url == 'manuf'){
+            newURL = 'MANUFACTURER';
+        }
+        else if(url == 'pr_image'){
+            newURL = 'PRODUCT_IMAGE';
+        }
+        else newURL = url.toUpperCase();
+        const modifiedData = {};
+
+        request(app)
+        .get('/api/sequence/SEQ_'.concat(newURL))
+        .then(function(response){
+            getID = response.body.LAST_NUMBER;
+        });
+        
+
+        it('GET request to check validity', function(done) {
+            request(app)
+                .get('/api/'.concat(url, '/', getID))
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200, done);
+        });
+
+    });
+}
+
+function testPOSTord() {
+
+    let cartID;
+    let clientID;
+
+    request(app)
+        .get('/api/cart')
+        .then(function(response){
+            cartID = response.body[0]['ID'];
+            clientID = response.body[0]['CLIENT_ID'];
+        });
+
+    describe('POST /ord', function() {
+        it('POST new ord', function(done) {
+            request(app)
+                .post('/api/ord')
+                .send({
+                    client_id: clientID,
+                    cart_id: cartID, 
+                    create_date: '2020/07/17 20:20:20',
+                    country: 'testCountry',
+                    state: 'testState',
+                    city: 'testCity',
+                    street: 'testStreet',
+                    house: '47',
+                    zip: 'A15P5E1',
+                    ord_status_id: '1'
+                })
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(201)
+                .expect({
+                    client_id: clientID,
+                    cart_id: cartID, 
+                    create_date: '2020/07/17 20:20:20',
+                    country: 'testCountry',
+                    state: 'testState',
+                    city: 'testCity',
+                    street: 'testStreet',
+                    house: '47',
+                    zip: 'A15P5E1',
+                    ord_status_id: '1'
+                })
+                .end(function(err, res) {
+                    if (err){
+                        // console.log(res);
+                        return done(err);
+                    }
+                    
+                    
+                    done();
+                });
+        });
+
+        
+        var getID;
+
+        request(app)
+        .get('/api/sequence/SEQ_ORD')
+        .then(function(response){
+            getID = response.body.LAST_NUMBER;
+        });
+        
+
+        it('GET request to check validity', function(done) {
+            request(app)
+                .get('/api/ord/'.concat(getID))
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200, done);
+        });
+
+
+
+    });
+
+}
+
+function testPUT(url, id, data) {
+    describe('PUT /'.concat(url), function() {
+        it('Updating '.concat(url, ' at id = ', id), function(done) {
+            request(app)
+                .put('/api/'.concat(url,'/', id))
+                .send(data)
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200)
+                .expect(Object.assign({}, data, {id: parseInt(id, 10)}))
+                .end(function(err, res) {
+                    if (err){
+                        // console.log(res);
+                        return done(err);
+                    }
+                    
+                    done();
+                });
+        });
+    });
+
+
 }
 
 
@@ -90,10 +248,12 @@ describe('GET requests: ', function() {
     "LOGO_URL": "dummyURL.com"});
 
 
-    testGET('cart', '419', {"ID": 419,
-    "CLIENT_ID": 68,
-    "CREATE_DATE": "2020-07-15T15:26:00.000Z",
-    "CART_STATUS_ID": 2});
+    testGET('cart', '417', {
+        "ID": 417,
+        "CLIENT_ID": 68,
+        "CREATE_DATE": "2020-07-10T10:45:00.457Z",
+        "CART_STATUS_ID": 1
+    });
 
     
     testGET('cart_content', '374', {"ID": 374,
@@ -161,7 +321,15 @@ describe('GET requests: ', function() {
         "NAME": "waiting for confirmation"
     });
 
-
+    testGET('address', '36', {
+        "ID": 36,
+        "COUNTRY": "KZ",
+        "PROVINCE_STATE": "Alm Obl",
+        "CITY": "Alm",
+        "STREET": "Satpayeva",
+        "HOUSE_NO": "47",
+        "ZIP": "A15P5E1"
+    });
 
 
 
@@ -178,55 +346,97 @@ describe('GET requests: ', function() {
 
 describe('POST requests: ', function() {
 
-    describe('POST /client', function() {
-        it('POST new client', function(done) {
-            request(app)
-                .post('/api/client')
-                .send({first_name: 'testName',
-                    second_name: 'testSurname',
-                    email: 'testEmail',
-                    phone_num: '1337',
-                    birth_date: '1999/12/02',
-                    login: 'testLogin',
-                    pass: 'testPass'})
-                .set('Accept', 'application/json')
-                .expect('Content-Type', /json/)
-                .expect(201)
-                .expect({
-                    "first_name": "testName",
-                    "second_name": "testSurname",
-                    "email": "testEmail",
-                    "phone_num": "1337",
-                    "birth_date": "1999/12/02",
-                    "login": "testLogin",
-                    "pass": "testPass"
-                })
-                .end(function(err, res) {
-                    if (err){
-                        // console.log(res);
-                        return done(err);
-                    }
-                    
-                    
-                    done();
-                });
-        });
-
-        // it('GET request to check validity', function(done) {
-
-        // });
-
+    testPOST('client', {
+    first_name: 'testName',
+    second_name: 'testSurname',
+    email: 'testEmail',
+    phone_num: '1337',
+    birth_date: '1999/12/02',
+    login: 'testLogin',
+    pass: 'testPass'
     });
 
+    testPOST('categ', {
+        name: "testCateg",
+        descr: "testDescr"
+    });
 
+    testPOST('manuf', {
+        name: "testCateg",
+        descr: "testDescr",
+        logo_url: "testUrl"
+    });
 
+    testPOST('product', {
+        name: "testProduct",
+        price: "1337",
+        descr: "testDescr",
+        spec: "testSpec",
+        stock_num: "228",
+        url: "testUrl",
+        categ_id: "33",
+        manufacturer_id: "39",
+        rating: "0",
+        is_active: "1"
+    });
+
+    testPOST('cart', {
+        client_id: "68",
+        create_date: "2020/07/17 22:55:00",
+        cart_status_id: "1"
+    });
+
+    testPOST('cart_content', {
+        quantity: "1",
+        product_id: "44",
+        cart_id: "380"
+    });
+
+    testPOST('cart_status', {
+        name: "testStatus"
+    });
+
+    
+    // Separate testPOST for ord is needed
+    testPOSTord();
+
+    testPOST('order_status', {
+        name: "testStatus"
+    });
+
+    testPOST('pr_image', {
+        url: "testURL",
+        product_id: "36"
+    });
+
+    testPOST('review', {
+        product_id: "36",
+        client_id: "49",
+        rating: "4",
+        title: "testTitle",
+        text: "testText"
+    });
 
 
 
 
 });
 
+describe('PUT requests: ', function() {
+    
+    testPUT('client', '146', {
+        first_name: "edited1",
+        second_name: "edited2",
+        email: "edited3",
+        phone_num: 228,
+        birth_date: "1999/12/02",
+        login: "edited4",
+        pass: "edited5"
+    });
 
+    
+
+});
 
 
 

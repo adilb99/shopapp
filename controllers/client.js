@@ -69,7 +69,7 @@ function getClientFromRec(req) {
     try {
       let new_client = getClientFromRec(req);
    
-      new_client.id = parseInt(req.query.id, 10);
+      new_client.id = parseInt(req.params.id, 10);
       
       new_client = await client.update(new_client);
    
@@ -87,7 +87,7 @@ function getClientFromRec(req) {
 
   async function del(req, res, next) {
     try {
-      const id = parseInt(req.query.id, 10);
+      const id = parseInt(req.params.id, 10);
    
       const success = await client.delete(id);
    

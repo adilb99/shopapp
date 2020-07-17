@@ -64,7 +64,7 @@ function getEntryFromRec(req) {
     try {
       let new_entry = getEntryFromRec(req);
    
-      new_entry.id = parseInt(req.query.id, 10);
+      new_entry.id = parseInt(req.params.id, 10);
       
       new_entry = await table.update(new_entry);
    
@@ -82,7 +82,7 @@ function getEntryFromRec(req) {
 
   async function del(req, res, next) {
     try {
-      const id = parseInt(req.query.id, 10);
+      const id = parseInt(req.params.id, 10);
    
       const success = await table.delete(id);
    

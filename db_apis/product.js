@@ -27,7 +27,7 @@ module.exports.find = find;
 
 const procedure_new_product = `
     BEGIN
-        new_product(:name, :price, :descr, :spec, :stock_num, :url, :manuf_id, :categ_id, :is_active, :rating);
+        new_product(:name, :price, :descr, :spec, :stock_num, :url, :manufacturer_id, :categ_id, :is_active, :rating);
     END;
     `;
 
@@ -64,7 +64,7 @@ const updateSql =
       url = :url,
       categ_id = :categ_id,
       rating = :rating,
-      manufacturer_id = :manuf_id,
+      manufacturer_id = :manufacturer_id,
       is_active = :is_active
   where id = :id`;
  

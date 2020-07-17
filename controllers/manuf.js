@@ -35,7 +35,7 @@ function getManufFromRec(req) {
       const new_manuf = {
         name: req.body.name,
         descr: req.body.descr,
-        logourl: req.body.logourl
+        logo_url: req.body.logo_url
         };
 
    
@@ -61,7 +61,7 @@ function getManufFromRec(req) {
     try {
       let new_manuf = getManufFromRec(req);
    
-      new_manuf.id = parseInt(req.query.id, 10);
+      new_manuf.id = parseInt(req.params.id, 10);
       
       new_manuf = await manuf.update(new_manuf);
    
@@ -79,7 +79,7 @@ function getManufFromRec(req) {
 
   async function del(req, res, next) {
     try {
-      const id = parseInt(req.query.id, 10);
+      const id = parseInt(req.params.id, 10);
    
       const success = await manuf.delete(id);
    

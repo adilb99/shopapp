@@ -47,7 +47,7 @@ function getProductFromRec(req) {
         stock_num: req.body.stock_num,
         url: req.body.url,
         categ_id: req.body.categ_id,
-        manuf_id: req.body.manuf_id,
+        manufacturer_id: req.body.manufacturer_id,
         rating: req.body.rating,
         is_active: req.body.is_active
         };
@@ -73,7 +73,7 @@ function getProductFromRec(req) {
     try {
       let new_product = getProductFromRec(req);
    
-      new_product.id = parseInt(req.query.id, 10);
+      new_product.id = parseInt(req.params.id, 10);
       
       new_product = await product.update(new_product);
    
@@ -91,7 +91,7 @@ function getProductFromRec(req) {
 
   async function del(req, res, next) {
     try {
-      const id = parseInt(req.query.id, 10);
+      const id = parseInt(req.params.id, 10);
    
       const success = await product.delete(id);
    
