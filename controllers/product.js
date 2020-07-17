@@ -26,18 +26,31 @@ module.exports.get = get;
 
 
 function getProductFromRec(req) {
-    const new_product = {
-      name: req.query.name,
-      price: req.query.price,
-      descr: req.query.descr,
-      spec: req.query.spec,
-      stock_num: req.query.stock_num,
-      url: req.query.url,
-      categ_id: req.query.categ_id,
-      manuf_id: req.query.manuf_id,
-      rating: req.query.rating,
-      is_active: req.query.is_active
-    };
+    // var new_product = {
+    //   name: req.query.name,
+    //   price: req.query.price,
+    //   descr: req.query.descr,
+    //   spec: req.query.spec,
+    //   stock_num: req.query.stock_num,
+    //   url: req.query.url,
+    //   categ_id: req.query.categ_id,
+    //   manuf_id: req.query.manuf_id,
+    //   rating: req.query.rating,
+    //   is_active: req.query.is_active
+    // };
+
+     const new_product = {
+        name: req.body.name,
+        price: req.body.price,
+        descr: req.body.descr,
+        spec: req.body.spec,
+        stock_num: req.body.stock_num,
+        url: req.body.url,
+        categ_id: req.body.categ_id,
+        manuf_id: req.body.manuf_id,
+        rating: req.body.rating,
+        is_active: req.body.is_active
+        };
     
     return new_product;
   }

@@ -26,16 +26,27 @@ module.exports.get = get;
 
 
 function getClientFromRec(req) {
+    // var new_client = {
+    //   first_name: req.query.first_name,
+    //   second_name: req.query.second_name,
+    //   email: req.query.email,
+    //   phone_num: req.query.phone_num,
+    //   birth_date: req.query.birth_date,
+    //   login: req.query.login,
+    //   pass: req.query.pass
+    // };
+    
     const new_client = {
-      first_name: req.query.first_name,
-      second_name: req.query.second_name,
-      email: req.query.email,
-      phone_num: req.query.phone_num,
-      birth_date: req.query.birth_date,
-      login: req.query.login,
-      pass: req.query.pass
-    };
-   
+        first_name: req.body.first_name,
+        second_name: req.body.second_name,
+        email: req.body.email,
+        phone_num: req.body.phone_num,
+        birth_date: req.body.birth_date,
+        login: req.body.login,
+        pass: req.body.pass
+      };
+    
+
     return new_client;
   }
    

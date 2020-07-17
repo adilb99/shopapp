@@ -13,7 +13,7 @@ async function find(context) {
   if (context.id) {
     binds.id = context.id;
  
-    query += " where product_id = :id";
+    query += " where id = :id";
   }
  
   const result = await database.simpleExecute(query, binds);

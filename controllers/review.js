@@ -26,13 +26,21 @@ module.exports.get = get;
 
 
 function getEntryFromRec(req) {
-    const new_entry = {
-      product_id: req.query.product_id,
-      client_id: req.query.client_id,
-      rating: req.query.rating,
-      title: req.query.title,
-      text: req.query.text
-    };
+    // var new_entry = {
+    //   product_id: req.query.product_id,
+    //   client_id: req.query.client_id,
+    //   rating: req.query.rating,
+    //   title: req.query.title,
+    //   text: req.query.text
+    // };
+
+      const new_entry = {
+        product_id: req.body.product_id,
+        client_id: req.body.client_id,
+        rating: req.body.rating,
+        title: req.body.title,
+        text: req.body.text
+        };
    
     return new_entry;
   }

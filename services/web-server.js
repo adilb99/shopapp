@@ -4,6 +4,7 @@ const express = require('express');
 const webServerConfig = require('../config/web-server.js');
 const database = require('./database.js'); 
 const router = require('./router.js');
+const bodyParser = require('body-parser');
 
 let httpServer;
  
@@ -13,6 +14,10 @@ function initialize() {
     httpServer = http.createServer(app);
  
     app.use(morgan('combined'));
+    
+    app.use(bodyParser.urlencoded({extended: true}));
+    app.use(bodyParser.json());
+
     app.use('/api', router);
     app.get('/', async (req, res) => {
       const result = await database.simpleExecute('select name from product');

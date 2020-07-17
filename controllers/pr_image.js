@@ -26,10 +26,15 @@ module.exports.get = get;
 
 
 function getImageFromRec(req) {
-    const new_image = {
-      url: req.query.url,
-      product_id: req.query.product_id
-    };
+    // var new_image = {
+    //   url: req.query.url,
+    //   product_id: req.query.product_id
+    // };
+
+      const new_image = {
+        url: req.body.url,
+        product_id: req.body.product_id
+        };
    
     return new_image;
   }

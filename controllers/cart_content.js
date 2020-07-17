@@ -26,11 +26,17 @@ module.exports.get = get;
 
 
 function getEntryFromRec(req) {
-    const new_entry = {
-      quantity: req.query.quantity,
-      product_id: req.query.product_id,
-      cart_id: req.query.cart_id
-    };
+    // var new_entry = {
+    //   quantity: req.query.quantity,
+    //   product_id: req.query.product_id,
+    //   cart_id: req.query.cart_id
+    // };
+
+      const new_entry = {
+        quantity: req.body.quantity,
+        product_id: req.body.product_id,
+        cart_id: req.body.cart_id
+        };
    
     return new_entry;
   }

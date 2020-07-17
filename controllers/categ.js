@@ -26,11 +26,16 @@ module.exports.get = get;
 
 
 function getCategFromRec(req) {
-    const new_categ = {
-      name: req.query.name,
-      descr: req.query.descr
-    };
+    // var new_categ = {
+    //   name: req.query.name,
+    //   descr: req.query.descr
+    // };
    
+     const new_categ = {
+        name: req.body.name,
+        descr: req.body.descr
+        };
+
     return new_categ;
   }
    

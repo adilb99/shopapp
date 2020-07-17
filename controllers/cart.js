@@ -26,11 +26,17 @@ module.exports.get = get;
 
 
 function getCartFromRec(req) {
-    const new_cart = {
-      client_id: req.query.client_id,
-      create_date: req.query.create_date,
-      cart_status_id: req.query.cart_status_id
-    };
+    // var new_cart = {
+    //   client_id: req.query.client_id,
+    //   create_date: req.query.create_date,
+    //   cart_status_id: req.query.cart_status_id
+    // };
+
+      const new_cart = {
+        client_id: req.body.client_id,
+        create_date: req.body.create_date,
+        cart_status_id: req.body.cart_status_id
+        };
    
     return new_cart;
   }

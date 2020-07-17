@@ -26,11 +26,18 @@ module.exports.get = get;
 
 
 function getManufFromRec(req) {
-    const new_manuf = {
-      name: req.query.name,
-      descr: req.query.descr,
-      logourl: req.query.logourl
-    };
+    // var new_manuf = {
+    //   name: req.query.name,
+    //   descr: req.query.descr,
+    //   logourl: req.query.logourl
+    // };
+
+      const new_manuf = {
+        name: req.body.name,
+        descr: req.body.descr,
+        logourl: req.body.logourl
+        };
+
    
     return new_manuf;
   }

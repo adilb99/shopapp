@@ -26,9 +26,13 @@ module.exports.get = get;
 
 
 function getEntryFromRec(req) {
-    const new_entry = {
-      name: req.query.name,
-    };
+    // var new_entry = {
+    //   name: req.query.name,
+    // };
+
+      const new_entry = {
+        name: req.body.name,
+        };
    
     return new_entry;
   }

@@ -26,18 +26,31 @@ module.exports.get = get;
 
 
 function getEntryFromRec(req) {
-    const new_entry = {
-    client_id : req.query.client_id,
-    cart_id: req.query.cart_id,  
-    create_date: req.query.create_date,
-    country: req.query.country,
-    state: req.query.state,
-    city: req.query.city,
-    street: req.query.street,
-    house: req.query.house,
-    zip: req.query.zip,
-    ord_status_id: req.query.ord_status_id
-    };
+    // var new_entry = {
+    // client_id : req.query.client_id,
+    // cart_id: req.query.cart_id,  
+    // create_date: req.query.create_date,
+    // country: req.query.country,
+    // state: req.query.state,
+    // city: req.query.city,
+    // street: req.query.street,
+    // house: req.query.house,
+    // zip: req.query.zip,
+    // ord_status_id: req.query.ord_status_id
+    // };
+
+      const new_entry = {
+        client_id : req.body.client_id,
+        cart_id: req.body.cart_id,  
+        create_date: req.body.create_date,
+        country: req.body.country,
+        state: req.body.state,
+        city: req.body.city,
+        street: req.body.street,
+        house: req.body.house,
+        zip: req.body.zip,
+        ord_status_id: req.body.ord_status_id
+        };
    
     return new_entry;
   }
@@ -57,15 +70,25 @@ function getEntryFromRec(req) {
   module.exports.post = post;
 
   function getEntryFromRec_put(req) {
-    const new_entry = {
-    country: req.query.country,
-    state: req.query.state,
-    city: req.query.city,
-    street: req.query.street,
-    house: req.query.house,
-    zip: req.query.zip,
-    ord_status_id: req.query.ord_status_id
-    };
+    // var new_entry = {
+    // country: req.query.country,
+    // state: req.query.state,
+    // city: req.query.city,
+    // street: req.query.street,
+    // house: req.query.house,
+    // zip: req.query.zip,
+    // ord_status_id: req.query.ord_status_id
+    // };
+
+      const new_entry = {
+        country: req.body.country,
+        state: req.body.state,
+        city: req.body.city,
+        street: req.body.street,
+        house: req.body.house,
+        zip: req.body.zip,
+        ord_status_id: req.body.ord_status_id
+        };
    
     return new_entry;
   }
