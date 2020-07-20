@@ -216,66 +216,76 @@ function testPUT(url, id, data) {
 
 describe('GET requests: ', function() {
 
-    testGET('client', '55', {"ID": 55,
-    "FIRST_NAME": "name 007",
-    "SECOND_NAME": "surname 007",
-    "LOGIN": "user 007",
-    "PASS": "simplepass",
-    "EMAIL": "email 007",
-    "PHONE_NUM": 7,
-    "BIRTH_DATE": "1999-12-02T00:00:00.000Z"});
+    testGET('client', '1', {
+        "ID": 1,
+        "FIRST_NAME": "name 001",
+        "SECOND_NAME": "surname 001",
+        "LOGIN": "user 001",
+        "PASS": "simplepass",
+        "EMAIL": "email 001",
+        "PHONE_NUM": 1,
+        "BIRTH_DATE": "1999-12-02T00:00:00.000Z"
+    });
 
-    testGET('product', '36', {"ID": 36,
-    "NAME": "product 001",
-    "PRICE": 1,
-    "DESCR": "simple description",
-    "SPEC": "simple specs",
-    "STOCK_NUM": 190,
-    "URL": "dummyProductURL.com",
-    "CATEG_ID": 33,
-    "RATING": 4,
-    "MANUFACTURER_ID": 39,
-    "IS_ACTIVE": 1});
+    testGET('product', '4', {
+        "ID": 4,
+        "NAME": "product 004",
+        "PRICE": 4,
+        "DESCR": "simple description",
+        "SPEC": "simple specs",
+        "STOCK_NUM": 187,
+        "URL": "dummyProductURL.com",
+        "CATEG_ID": 4,
+        "RATING": 2,
+        "MANUFACTURER_ID": 4,
+        "IS_ACTIVE": 1
+    });
 
-    testGET('categ', '35', {"ID": 35,
-    "NAME": "categ 002",
-    "DESCR": "simple description"});
+    testGET('categ', '1', {
+        "ID": 1,
+        "NAME": "categ 001",
+        "DESCR": "simple description"
+    });
 
     
-    testGET('manuf', '41', { "ID": 41,
-    "NAME": "company 002",
-    "DESCR": "simple description",
-    "LOGO_URL": "dummyURL.com"});
+    testGET('manuf', '1', {
+        "ID": 1,
+        "NAME": "company 001",
+        "DESCR": "simple description",
+        "LOGO_URL": "dummyURL.com"
+    });
 
 
-    testGET('cart', '417', {
-        "ID": 417,
-        "CLIENT_ID": 68,
-        "CREATE_DATE": "2020-07-10T10:45:00.457Z",
+    testGET('cart', '406', {
+        "ID": 406,
+        "CLIENT_ID": 16,
+        "CREATE_DATE": "2020-07-20T03:57:56.031Z",
         "CART_STATUS_ID": 1
     });
 
     
-    testGET('cart_content', '374', {"ID": 374,
-    "QUANTITY": 1,
-    "PRODUCT_ID": 44,
-    "CART_ID": 380});
+    testGET('cart_content', '350', {
+        "ID": 350,
+        "QUANTITY": 1,
+        "PRODUCT_ID": 5,
+        "CART_ID": 382
+    });
 
-    testGET('cart_history', '19', {
-        "ID": 19,
+    testGET('cart_history', '33', {
+        "ID": 33,
         "CART_STATUS_ID": 3,
-        "CLIENT_ID": 49,
-        "CREATE_DATE": "2020-07-10T10:38:12.878Z"
+        "CLIENT_ID": 3,
+        "CREATE_DATE": "2020-07-20T03:54:48.040Z"
     });
 
 
-    testGET('cart_content_history', '13', {
-        "ID": 13,
-        "PRODUCT_ID": 46,
-        "CART_HISTORY_ID": 19,
+    testGET('cart_content_history', '1', {
+        "ID": 1,
+        "PRODUCT_ID": 15,
+        "CART_HISTORY_ID": 33,
         "QUANTITY": 1,
-        "OLD_PRICE": 11,
-        "OLD_PRODUCT_NAME": "product 011"
+        "OLD_PRICE": 15,
+        "OLD_PRODUCT_NAME": "product 015"
     });
 
 
@@ -285,35 +295,35 @@ describe('GET requests: ', function() {
     });
 
 
-    testGET('pr_image', '3', {
-        "ID": 3,
-        "URL": "imageURL.com",
-        "PRODUCT_ID": 36
+    testGET('pr_image', '1', {
+        "ID": 1,
+        "URL": "URLURLURL",
+        "PRODUCT_ID": 1
     });
 
-    testGET('review', '9', {
-        "ID": 9,
-        "PRODUCT_ID": 36,
-        "CLIENT_ID": 49,
-        "RATING": 4,
+    testGET('review', '1', {
+        "ID": 1,
+        "PRODUCT_ID": 1,
+        "CLIENT_ID": 1,
+        "RATING": 5,
         "TITLE": "some title",
         "TEXT": "some text"
     });
 
-    testGET('ord', '14', {
-        "ID": 14,
-        "CREATE_DATE": "2020-07-10T11:10:42.329Z",
-        "BILL": 11,
-        "ADDRESS_ID": 13,
+    testGET('ord', '1', {
+        "ID": 1,
+        "CREATE_DATE": "2020-07-20T04:03:46.740Z",
+        "BILL": 15,
+        "ADDRESS_ID": 1,
         "ORD_STATUS_ID": 3,
-        "CART_HISTORY_ID": 19,
-        "CLIENT_ID": 49
+        "CART_HISTORY_ID": 33,
+        "CLIENT_ID": 3
     });
 
-    testGET('ord_item', '16', {
-        "ID": 16,
-        "CART_CONTENT_HISTORY_ID": 13,
-        "ORD_ID": 14
+    testGET('ord_item', '1', {
+        "ID": 1,
+        "CART_CONTENT_HISTORY_ID": 1,
+        "ORD_ID": 1
     });
 
     testGET('order_status', '1', {
@@ -321,8 +331,8 @@ describe('GET requests: ', function() {
         "NAME": "waiting for confirmation"
     });
 
-    testGET('address', '36', {
-        "ID": 36,
+    testGET('address', '1', {
+        "ID": 1,
         "COUNTRY": "KZ",
         "PROVINCE_STATE": "Alm Obl",
         "CITY": "Alm",
@@ -374,22 +384,22 @@ describe('POST requests: ', function() {
         spec: "testSpec",
         stock_num: "228",
         url: "testUrl",
-        categ_id: "33",
-        manufacturer_id: "39",
+        categ_id: "1",
+        manufacturer_id: "1",
         rating: "0",
         is_active: "1"
     });
 
     testPOST('cart', {
-        client_id: "68",
+        client_id: "1",
         create_date: "2020/07/17 22:55:00",
         cart_status_id: "1"
     });
 
     testPOST('cart_content', {
         quantity: "1",
-        product_id: "44",
-        cart_id: "380"
+        product_id: "1",
+        cart_id: "430"
     });
 
     testPOST('cart_status', {
@@ -406,12 +416,12 @@ describe('POST requests: ', function() {
 
     testPOST('pr_image', {
         url: "testURL",
-        product_id: "36"
+        product_id: "1"
     });
 
     testPOST('review', {
-        product_id: "36",
-        client_id: "49",
+        product_id: "1",
+        client_id: "1",
         rating: "4",
         title: "testTitle",
         text: "testText"
