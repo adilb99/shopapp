@@ -36,14 +36,16 @@ async function create(emp) {
     console.log(new_client);
 
 
-//   new_client.id = {
-//     dir: oracledb.BIND_OUT,
-//     type: oracledb.INTEGER
-//   }
+  // new_client.id = {
+  //   dir: oracledb.BIND_OUT,
+  //   type: oracledb.NUMBER
+  // }
  
   const result = await database.simpleExecute(procedure_new_client, new_client);
  
-//   new_client.id = result.outBinds.id[0];
+  // console.log(result.outBinds);
+  // new_client.id = result.outBinds.id[0];
+
  
   return new_client;
 }

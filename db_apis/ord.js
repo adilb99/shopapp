@@ -78,7 +78,7 @@ async function update(emp) {
   console.log(new_review);
   const result = await database.simpleExecute(updateSql, new_review);
  
-  if (result.rowsAffected && result.rowsAffected === 1) {
+  if (result != null) {
     return new_review;
   } else {
     return null;

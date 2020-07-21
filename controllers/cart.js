@@ -58,7 +58,7 @@ function getCartFromRec(req) {
 
   async function put(req, res, next) {
     try {
-      let new_cart = getCartFromRec(req);
+      let new_cart = {};
    
       new_cart.id = parseInt(req.params.id, 10);
       

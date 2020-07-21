@@ -1,7 +1,8 @@
 var assert = require('chai').assert;
 var expect = require('chai').expect;
 var should = require('chai').should;
-
+var sinon = require('sinon');
+var router = require('../services/router.js');
 const request = require('supertest');
 const bodyParser = require('body-parser');
 
@@ -9,17 +10,6 @@ const app = 'http://192.168.99.100:3000';
 
 
 /*  FUNCTIONS (FOR LESS DUPLICATION):   */
-
-function isNumeric(n) {
-    if(!isNaN(parseFloat(n)) && isFinite(n)){
-        return parseInt(n, 10);
-    } else if(!isNaN(Date.parse(n))) {
-        if(n.length == 10) return n.concat('T00:00:00.000Z').replaceAll('/', '-');
-        else return n.concat('.000Z').replace(' ', 'T').replaceAll('/', '-');
-    }
-    else return n;
-  
-}
 
 function testGET(url, id, expected) {
     describe('GET /'.concat(url), function () {
@@ -213,6 +203,8 @@ function testPUT(url, id, data) {
 
 
 /*    TEST CASES:       */ 
+
+describe.skip('Black-Box request testing: ', function() {
 
 describe('GET requests: ', function() {
 
@@ -432,21 +424,294 @@ describe('POST requests: ', function() {
 
 });
 
-describe('PUT requests: ', function() {
+
+});
+
+
+describe('User Scenario 1 (Valid)', function() {
     
-    testPUT('client', '146', {
-        first_name: "edited1",
-        second_name: "edited2",
-        email: "edited3",
-        phone_num: 228,
-        birth_date: "1999/12/02",
-        login: "edited4",
-        pass: "edited5"
+
+
+    it('Register user (POST new client)', function(done){
+        request(app)
+                .post('/api/client')
+                .send({
+                    first_name: 'Adil',
+                    second_name: 'Botabekov',
+                    login: 'adilb99',
+                    pass: 'simplepass',
+                    email: 'adilb99@kaist.ac.kr',
+                    phone_num: 9999,
+                    birth_date: '1999/12/02'
+                })
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(201)
+                .end(function(err, res) {
+                    if (err){
+                        // console.log(res);
+                        return done(err);
+                    }
+                    // console.log(res.body);
+                    done();
+                });
+
+    });
+
+
+    it('View all products', function(done){
+        request(app)
+                .get('/api/product')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200, done);
+    });
+
+
+    it('Select a single product', function(done){
+        request(app)
+                .get('/api/product/14')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200, done);
+    });
+
+
+    it('Create cart (POST new cart)', function(done){
+        request(app)
+                .post('/api/cart')
+                .send({
+                    client_id: 30,
+                    create_date: '2020/07/21 20:20:20',
+                    cart_status_id: 1
+                })
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(201)
+                .end(function(err, res) {
+                    if (err){
+                        // console.log(res);
+                        return done(err);
+                    }
+                    done();
+                });
+    });
+
+
+    it('Populate the cart with selected product (POST)', function(done){
+        request(app)
+            .post('/api/cart_content')
+            .send({
+                quantity: 1,
+                product_id: 14,
+                cart_id: 444
+            })
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(201)
+            .end(function(err, res) {
+                if (err){
+                    // console.log(res);
+                    return done(err);
+                }
+                done();
+            });
+    });
+
+
+    it('Complete order (POST)', function(done){
+        request(app)
+            .post('/api/ord')
+            .send({
+                client_id: 30,
+                cart_id: 444,
+                create_date: '2020/07/21 20:20:20',
+                country: 'KZ',
+                state: 'Alm Obl',
+                city: 'Almaty',
+                street: 'Satpayeva',
+                house: '47',
+                zip: 'A15P5E1', 
+                ord_status_id: 1
+            })
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(201)
+            .end(function(err, res) {
+                if (err){
+                    // console.log(res);
+                    return done(err);
+                }
+                done();
+            });
+            
+    });
+
+    it('Deliver order (PUT)', function(done){
+        request(app)
+            .put('/api/ord/306')
+            .send({
+                country: 'KZ',
+                state: 'Alm Obl',
+                city: 'Almaty',
+                street: 'Satpayeva',
+                house: '47',
+                zip: 'A15P5E1', 
+                ord_status_id: 3
+            })
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(200)
+            .end(function(err, res) {
+                if (err){
+                    // console.log(res);
+                    return done(err);
+                }
+                done();
+            });
+    });
+
+});
+
+
+describe('User Scenario 2 (Invalid)', function() {
+    
+    beforeEach('re-initialize db', function(){
+        
+    });
+
+
+    it('create new user with invalid fields', function(done){
+        request(app)
+            .post('/api/client')
+            .send({
+                first_name: '',
+                second_name: '',
+                login: null,
+                pass: 'simplepass',
+                email: 12,
+                phone_num: 'aaa',
+                birth_date: '1999-12-02'
+            })
+            .expect(500, done);
+    });
+
+    it('login into non-existing account', function(done){
+        request(app)
+            .get('/api/client/1000')
+            .expect(404, done);
+    });
+
+
+    it('Add product to cart with quantity larger than stock', function(done){
+        request(app)
+            .post('/api/cart_content')
+            .send({
+                product_id: 16,
+                cart_id: 396,
+                quantity: 3000000
+            })
+            .expect(500)
+            .end(function(err, res) {
+                if (err){
+                    // console.log(res);
+                    return done(err);
+                }
+                done();
+            });
+    });
+
+    it('Invalid input pair on new order', function(done){
+        request(app)
+            .post('/api/ord')
+            .send({
+                client_id: 10, // Supposed to be 18
+                cart_id: 388, 
+                create_date: '2020/07/21 20:20:20',
+                country: 'KZ',
+                state: 'asd',
+                city: 'asd',
+                street: 'asd',
+                house: 'asd',
+                zip: 'asd',
+                ord_status_id: 1
+            })
+            .expect(500, done)
+    });  
+
+    it('Partial input on new order', function(done){
+        request(app)
+            .post('/api/ord')
+            .send({
+                client_id: 19,
+                cart_id: 389, 
+                create_date: '2020/07/21 20:20:20',
+                country: 'KZ'
+            })
+            .expect(500, done)
+    }); 
+    
+    it('sign-up with existing login', function(done){
+        request(app)
+            .post('/api/client')
+            .send({
+                first_name: 'name 001',
+                second_name: 'surname 001',
+                login: 'user 001',
+                pass: 'simplepass',
+                email: 'email 001',
+                phone_num: 111,
+                birth_date: '1999/12/02'
+            })
+            .expect(500, done);
+    });
+
+    it('DELETE request for ord (unsupported)', function(done){
+        request(app)
+            .delete('/api/ord/1')
+            .expect(404, done);
+    });
+
+    
+    it('UPDATE with wrong data', function(done){
+        request(app)
+            .put('/api/ord/9')
+            .send({
+                country: 'KZ',
+                state: 'asd',
+                city: 'asd',
+                street: 'asd',
+                house: 'asd',
+                zip: 'asd',
+                ord_status_id: 100 // no such status
+            })
+            .expect(500, done)
+    });
+
+
+});
+
+
+describe.skip('testing with stubs', function(){
+    
+
+    it('stubbed GET request', function(done){
+        
+
+        const stub = sinon.stub(request(app), 'get');
+
+        stub.yields(null, "testError");
+
+        request(app)
+            .get('/api/cart_status', function(err, res){
+                console.log(res);
+                
+                sinon.restore();
+
+                done();
+            });
     });
 
     
 
 });
-
-
-
