@@ -10,8 +10,12 @@ cache:
 
 install_dependencies:
   stage: build
+  before_script: 
+    - yum install libaio
+    - yum install libnsl
   script:
     - npm install
+
   artifacts:
     paths:
       - node_modules/
