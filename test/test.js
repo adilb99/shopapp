@@ -545,6 +545,8 @@ describe('User Scenario 1 (Valid)', function() {
             
     });
 
+    // CHECK IF CART IS DELETED AND PUT INTO HISTORY
+
     it('Deliver order (PUT)', function(done){
         request(app)
             .put('/api/ord/304')
@@ -664,7 +666,7 @@ describe.skip('testing with stubs', function(){
         const stub = sinon.stub(request(app), 'get');
 
         stub.yields(null, "testError");
-
+        
         request(app)
             .get('/api/cart_status', function(err, res){
                 console.log(res);

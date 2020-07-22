@@ -16,34 +16,45 @@ const cart_content_history = require('../controllers/cart_content_history.js');
 const ord_item = require('../controllers/ord_item.js');
 const address = require('../controllers/address.js');
 const sequence = require('../controllers/sequence.js');
-
+const clientLogin = require('../controllers/clientLogin.js');
+const productCateg = require('../controllers/productCateg.js');
 
 
 router.route('/client/:id?')
   .get(client.get)
   .post(client.post)
-  .put(client.put)  // TBE
-  .delete(client.delete); // TBD
+  .put(client.put)  
+  .delete(client.delete); 
+
+
+router.route('/client/login/:login?') // NEW!!!
+    .get(clientLogin.get);
 
 
 router.route('/product/:id?')
     .get(product.get)
     .post(product.post)
-    .put(product.put)  // TBE
-    .delete(product.delete); // TBD
+    .put(product.put)  
+    .delete(product.delete);
+    
+
+router.route('/product/categ/:categ_id?') // NEW!!!
+    .get(productCateg.get);
+
+
 
 router.route('/manuf/:id?')
     .get(manuf.get)
     .post(manuf.post)
     .put(manuf.put)
-    .delete(manuf.delete);  // TBD
+    .delete(manuf.delete);  
 
 
 router.route('/categ/:id?')
     .get(categ.get)
     .post(categ.post)
     .put(categ.put)
-    .delete(categ.delete);  // TBD
+    .delete(categ.delete);  
 
 router.route('/pr_image/:id?')
     .get(pr_image.get)
@@ -55,12 +66,12 @@ router.route('/cart/:id?')
     .get(cart.get)
     .post(cart.post)
     .put(cart.put)
-    .delete(cart.delete); // TBD
+    .delete(cart.delete); 
 
 router.route('/cart_content/:id?')
     .get(cart_content.get)
     .post(cart_content.post)
-    .put(cart_content.put)  // TBE
+    .put(cart_content.put)  
     .delete(cart_content.delete);
 
 

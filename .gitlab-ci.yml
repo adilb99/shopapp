@@ -50,9 +50,9 @@ cache:
 
 testing_a:
   stage: test
-  before_script:
-    - npm install instantclient
-    - npm install oracledb
+  # before_script:
+  #   - npm install instantclient
+  #   - npm install oracledb
   script: npm test
   tags:
     - shopapp
