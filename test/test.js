@@ -206,231 +206,233 @@ function testPUT(url, id, data) {
 
 /*    TEST CASES:       */ 
 
-describe.skip('Black-Box request testing: ', function() {
+describe('Black-Box request testing: ', function() {
 
-describe('GET requests: ', function() {
+    this.timeout(10000);
 
-    testGET('client', '1', {
-        "ID": 1,
-        "FIRST_NAME": "name 001",
-        "SECOND_NAME": "surname 001",
-        "LOGIN": "user 001",
-        "PASS": "simplepass",
-        "EMAIL": "email 001",
-        "PHONE_NUM": 1,
-        "BIRTH_DATE": "1999-12-02T00:00:00.000Z"
+    describe('GET requests: ', function() {
+
+        testGET('client', '1', {
+            "ID": 1,
+            "FIRST_NAME": "name 001",
+            "SECOND_NAME": "surname 001",
+            "LOGIN": "user 001",
+            "PASS": "simplepass",
+            "EMAIL": "email 001",
+            "PHONE_NUM": 1,
+            "BIRTH_DATE": "1999-12-02T00:00:00.000Z"
+        });
+
+        testGET('product', '4', {
+            "ID": 4,
+            "NAME": "product 004",
+            "PRICE": 4,
+            "DESCR": "simple description",
+            "SPEC": "simple specs",
+            "STOCK_NUM": 187,
+            "URL": "dummyProductURL.com",
+            "CATEG_ID": 4,
+            "RATING": 2,
+            "MANUFACTURER_ID": 4,
+            "IS_ACTIVE": 1
+        });
+
+        testGET('categ', '1', {
+            "ID": 1,
+            "NAME": "categ 001",
+            "DESCR": "simple description"
+        });
+
+        
+        testGET('manuf', '1', {
+            "ID": 1,
+            "NAME": "company 001",
+            "DESCR": "simple description",
+            "LOGO_URL": "dummyURL.com"
+        });
+
+
+        testGET('cart', '406', {
+            "ID": 406,
+            "CLIENT_ID": 16,
+            "CREATE_DATE": "2020-07-20T03:57:56.031Z",
+            "CART_STATUS_ID": 1
+        });
+
+        
+        testGET('cart_content', '350', {
+            "ID": 350,
+            "QUANTITY": 1,
+            "PRODUCT_ID": 5,
+            "CART_ID": 382
+        });
+
+        testGET('cart_history', '33', {
+            "ID": 33,
+            "CART_STATUS_ID": 3,
+            "CLIENT_ID": 3,
+            "CREATE_DATE": "2020-07-20T03:54:48.040Z"
+        });
+
+
+        testGET('cart_content_history', '1', {
+            "ID": 1,
+            "PRODUCT_ID": 15,
+            "CART_HISTORY_ID": 33,
+            "QUANTITY": 1,
+            "OLD_PRICE": 15,
+            "OLD_PRODUCT_NAME": "product 015"
+        });
+
+
+        testGET('cart_status', '1', {
+            "ID": 1,
+            "NAME": "open"
+        });
+
+
+        testGET('pr_image', '1', {
+            "ID": 1,
+            "URL": "URLURLURL",
+            "PRODUCT_ID": 1
+        });
+
+        testGET('review', '1', {
+            "ID": 1,
+            "PRODUCT_ID": 1,
+            "CLIENT_ID": 1,
+            "RATING": 5,
+            "TITLE": "some title",
+            "TEXT": "some text"
+        });
+
+        testGET('ord', '1', {
+            "ID": 1,
+            "CREATE_DATE": "2020-07-20T04:03:46.740Z",
+            "BILL": 15,
+            "ADDRESS_ID": 1,
+            "ORD_STATUS_ID": 3,
+            "CART_HISTORY_ID": 33,
+            "CLIENT_ID": 3
+        });
+
+        testGET('ord_item', '1', {
+            "ID": 1,
+            "CART_CONTENT_HISTORY_ID": 1,
+            "ORD_ID": 1
+        });
+
+        testGET('order_status', '1', {
+            "ID": 1,
+            "NAME": "waiting for confirmation"
+        });
+
+        testGET('address', '1', {
+            "ID": 1,
+            "COUNTRY": "KZ",
+            "PROVINCE_STATE": "Alm Obl",
+            "CITY": "Alm",
+            "STREET": "Satpayeva",
+            "HOUSE_NO": "47",
+            "ZIP": "A15P5E1"
+        });
+
+
+
+
+
+
+
+
+
+
+
     });
 
-    testGET('product', '4', {
-        "ID": 4,
-        "NAME": "product 004",
-        "PRICE": 4,
-        "DESCR": "simple description",
-        "SPEC": "simple specs",
-        "STOCK_NUM": 187,
-        "URL": "dummyProductURL.com",
-        "CATEG_ID": 4,
-        "RATING": 2,
-        "MANUFACTURER_ID": 4,
-        "IS_ACTIVE": 1
+
+    describe('POST requests: ', function() {
+
+        testPOST('client', {
+        first_name: 'testName',
+        second_name: 'testSurname',
+        email: 'testEmail',
+        phone_num: '1337',
+        birth_date: '1999/12/02',
+        login: 'testLogin',
+        pass: 'testPass'
+        });
+
+        testPOST('categ', {
+            name: "testCateg",
+            descr: "testDescr"
+        });
+
+        testPOST('manuf', {
+            name: "testCateg",
+            descr: "testDescr",
+            logo_url: "testUrl"
+        });
+
+        testPOST('product', {
+            name: "testProduct",
+            price: "1337",
+            descr: "testDescr",
+            spec: "testSpec",
+            stock_num: "228",
+            url: "testUrl",
+            categ_id: "1",
+            manufacturer_id: "1",
+            rating: "0",
+            is_active: "1"
+        });
+
+        testPOST('cart', {
+            client_id: "1",
+            create_date: "2020/07/17 22:55:00",
+            cart_status_id: "1"
+        });
+
+        testPOST('cart_content', {
+            quantity: "1",
+            product_id: "1",
+            cart_id: "430"
+        });
+
+        testPOST('cart_status', {
+            name: "testStatus"
+        });
+
+        
+        // Separate testPOST for ord is needed
+        testPOSTord();
+
+        testPOST('order_status', {
+            name: "testStatus"
+        });
+
+        testPOST('pr_image', {
+            url: "testURL",
+            product_id: "1"
+        });
+
+        testPOST('review', {
+            product_id: "1",
+            client_id: "1",
+            rating: "4",
+            title: "testTitle",
+            text: "testText"
+        });
+
+
+
+
     });
-
-    testGET('categ', '1', {
-        "ID": 1,
-        "NAME": "categ 001",
-        "DESCR": "simple description"
-    });
-
-    
-    testGET('manuf', '1', {
-        "ID": 1,
-        "NAME": "company 001",
-        "DESCR": "simple description",
-        "LOGO_URL": "dummyURL.com"
-    });
-
-
-    testGET('cart', '406', {
-        "ID": 406,
-        "CLIENT_ID": 16,
-        "CREATE_DATE": "2020-07-20T03:57:56.031Z",
-        "CART_STATUS_ID": 1
-    });
-
-    
-    testGET('cart_content', '350', {
-        "ID": 350,
-        "QUANTITY": 1,
-        "PRODUCT_ID": 5,
-        "CART_ID": 382
-    });
-
-    testGET('cart_history', '33', {
-        "ID": 33,
-        "CART_STATUS_ID": 3,
-        "CLIENT_ID": 3,
-        "CREATE_DATE": "2020-07-20T03:54:48.040Z"
-    });
-
-
-    testGET('cart_content_history', '1', {
-        "ID": 1,
-        "PRODUCT_ID": 15,
-        "CART_HISTORY_ID": 33,
-        "QUANTITY": 1,
-        "OLD_PRICE": 15,
-        "OLD_PRODUCT_NAME": "product 015"
-    });
-
-
-    testGET('cart_status', '1', {
-        "ID": 1,
-        "NAME": "open"
-    });
-
-
-    testGET('pr_image', '1', {
-        "ID": 1,
-        "URL": "URLURLURL",
-        "PRODUCT_ID": 1
-    });
-
-    testGET('review', '1', {
-        "ID": 1,
-        "PRODUCT_ID": 1,
-        "CLIENT_ID": 1,
-        "RATING": 5,
-        "TITLE": "some title",
-        "TEXT": "some text"
-    });
-
-    testGET('ord', '1', {
-        "ID": 1,
-        "CREATE_DATE": "2020-07-20T04:03:46.740Z",
-        "BILL": 15,
-        "ADDRESS_ID": 1,
-        "ORD_STATUS_ID": 3,
-        "CART_HISTORY_ID": 33,
-        "CLIENT_ID": 3
-    });
-
-    testGET('ord_item', '1', {
-        "ID": 1,
-        "CART_CONTENT_HISTORY_ID": 1,
-        "ORD_ID": 1
-    });
-
-    testGET('order_status', '1', {
-        "ID": 1,
-        "NAME": "waiting for confirmation"
-    });
-
-    testGET('address', '1', {
-        "ID": 1,
-        "COUNTRY": "KZ",
-        "PROVINCE_STATE": "Alm Obl",
-        "CITY": "Alm",
-        "STREET": "Satpayeva",
-        "HOUSE_NO": "47",
-        "ZIP": "A15P5E1"
-    });
-
-
-
-
-
-
-
-
-
 
 
 });
 
 
-describe('POST requests: ', function() {
-
-    testPOST('client', {
-    first_name: 'testName',
-    second_name: 'testSurname',
-    email: 'testEmail',
-    phone_num: '1337',
-    birth_date: '1999/12/02',
-    login: 'testLogin',
-    pass: 'testPass'
-    });
-
-    testPOST('categ', {
-        name: "testCateg",
-        descr: "testDescr"
-    });
-
-    testPOST('manuf', {
-        name: "testCateg",
-        descr: "testDescr",
-        logo_url: "testUrl"
-    });
-
-    testPOST('product', {
-        name: "testProduct",
-        price: "1337",
-        descr: "testDescr",
-        spec: "testSpec",
-        stock_num: "228",
-        url: "testUrl",
-        categ_id: "1",
-        manufacturer_id: "1",
-        rating: "0",
-        is_active: "1"
-    });
-
-    testPOST('cart', {
-        client_id: "1",
-        create_date: "2020/07/17 22:55:00",
-        cart_status_id: "1"
-    });
-
-    testPOST('cart_content', {
-        quantity: "1",
-        product_id: "1",
-        cart_id: "430"
-    });
-
-    testPOST('cart_status', {
-        name: "testStatus"
-    });
-
-    
-    // Separate testPOST for ord is needed
-    testPOSTord();
-
-    testPOST('order_status', {
-        name: "testStatus"
-    });
-
-    testPOST('pr_image', {
-        url: "testURL",
-        product_id: "1"
-    });
-
-    testPOST('review', {
-        product_id: "1",
-        client_id: "1",
-        rating: "4",
-        title: "testTitle",
-        text: "testText"
-    });
-
-
-
-
-});
-
-
-});
-
-
-describe('User Scenario 1 (Valid)', function() {
+describe.skip('User Scenario 1 (Valid)', function() {
     
 
 
@@ -576,7 +578,7 @@ describe('User Scenario 1 (Valid)', function() {
 });
 
 
-describe('User Scenario 2 (Invalid)', function() {
+describe.skip('User Scenario 2 (Invalid)', function() {
     
     beforeEach('re-initialize db', function(){
         
