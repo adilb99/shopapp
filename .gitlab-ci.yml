@@ -24,9 +24,10 @@ install_deps_and_test:
     - yum install -y libnsl
     - sh -c "echo /opt/oracle/instantclient_19_6 > /etc/ld.so.conf.d/oracle-instantclient.conf"
     - ldconfig
-    - cd
     - yum install -y tree
     - tree
+    - cd
+    - cd /root
     - npm install
     - npm test
   artifacts:
