@@ -25,6 +25,9 @@ install_dependencies:
     - sh -c "echo /opt/oracle/instantclient_19_6 > /etc/ld.so.conf.d/oracle-instantclient.conf"
     - ldconfig
     - cd
+  artifacts:
+    paths:
+      - /opt/oracle
 
 build_and_start:
   stage: build
