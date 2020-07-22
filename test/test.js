@@ -8,7 +8,7 @@ var sinon = require('sinon');
 const request = require('supertest');
 
 
-const app = 'http://192.168.99.100:3000';
+const app = 'http://192.168.99.100:80';
 
 
 /*  FUNCTIONS (FOR LESS DUPLICATION):   */
@@ -208,7 +208,6 @@ function testPUT(url, id, data) {
 
 describe('Black-Box request testing: ', function() {
 
-    this.timeout(10000);
 
     describe('GET requests: ', function() {
 
@@ -350,7 +349,7 @@ describe('Black-Box request testing: ', function() {
     });
 
 
-    describe('POST requests: ', function() {
+    describe.skip('POST requests: ', function() {
 
         testPOST('client', {
         first_name: 'testName',
