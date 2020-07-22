@@ -27,7 +27,7 @@ module.exports.find = find;
 
 const createSql = `
     BEGIN
-        new_order_byID(:client_id, :cart_id, to_timestamp(:create_date, 'yyyy/mm/dd hh24:mi:ss'), :country, :state, :city, :street, :house, :zip, :ord_status_id);
+        new_order_byID(:cart_id, systimestamp, :country, :state, :city, :street, :house, :zip);
     END;
     `;
  
@@ -52,21 +52,8 @@ module.exports.create = create;
 
 const updateSql =
  `
- DECLARE
-    addr_id integer;
  BEGIN
     
-    select address_id into addr_id from ord where id = :id;
-
-    update address
-    set country = :country,
-        province_state = :state,
-        city = :city,
-        street = :street,
-        house_no = :house,
-        zip = :zip
-        where id = addr_id;
-   
     update ord
     set ord_status_id = :ord_status_id
     where id = :id;
@@ -78,7 +65,7 @@ async function update(emp) {
   console.log(new_review);
   const result = await database.simpleExecute(updateSql, new_review);
  
-  if (result != null) {
+  if (result) {
     return new_review;
   } else {
     return null;

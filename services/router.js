@@ -107,7 +107,8 @@ router.route('/ord_item/:id?')
     .delete(ord_item.delete);
 
 router.route('/address/:id?')
-    .get(address.get);
+    .get(address.get)
+    .put(address.put);
 
 
 router.route('/sequence/:sequence_name?')

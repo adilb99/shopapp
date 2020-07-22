@@ -51,19 +51,22 @@ async function create(emp) {
 module.exports.create = create;
 
 const updateSql =
- `BEGIN
- 
+ `
+ DECLARE
+ pr_id integer;
+ BEGIN
+
+  SELECT product_id into pr_id from review where id = :id;
+
     update review
-    set client_id = :client_id,
-        product_id = :product_id,
-        rating = :rating,
+    set rating = :rating,
         title = :title,
         text = :text
         where id = :id;
 
     UPDATE product 
-    SET rating = (SELECT SUM(rating) FROM review WHERE product_id = :product_id) / (SELECT COUNT(rating) FROM review WHERE product_id = :product_id) 
-    WHERE id = :product_id;
+    SET rating = (SELECT SUM(rating) FROM review WHERE product_id = pr_id) / (SELECT COUNT(rating) FROM review WHERE product_id = pr_id) 
+    WHERE id = pr_id;
 
  END;`;
  
@@ -72,7 +75,7 @@ async function update(emp) {
   console.log(new_review);
   const result = await database.simpleExecute(updateSql, new_review);
  
-  if (result.rowsAffected && result.rowsAffected === 1) {
+  if (result) {
     return new_review;
   } else {
     return null;

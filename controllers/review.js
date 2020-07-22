@@ -26,13 +26,6 @@ module.exports.get = get;
 
 
 function getEntryFromRec(req) {
-    // var new_entry = {
-    //   product_id: req.query.product_id,
-    //   client_id: req.query.client_id,
-    //   rating: req.query.rating,
-    //   title: req.query.title,
-    //   text: req.query.text
-    // };
 
       const new_entry = {
         product_id: req.body.product_id,
@@ -59,10 +52,20 @@ function getEntryFromRec(req) {
    
   module.exports.post = post;
 
+  function getEntryFromRec_put(req) {
+
+    const new_entry = {
+      rating: req.body.rating,
+      title: req.body.title,
+      text: req.body.text
+      };
+ 
+  return new_entry;
+}
 
   async function put(req, res, next) {
     try {
-      let new_entry = getEntryFromRec(req);
+      let new_entry = getEntryFromRec_put(req);
    
       new_entry.id = parseInt(req.params.id, 10);
       

@@ -27,7 +27,7 @@ module.exports.find = find;
 
 const procedure_new_cart = `
     BEGIN
-        new_cart_byID(:client_id, to_timestamp(:create_date, 'yyyy/mm/dd hh24:mi:ss'), :cart_status_id);
+        new_cart_byID(:client_id, systimestamp);
     END;
     `;
  

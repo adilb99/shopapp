@@ -22,3 +22,32 @@ async function find(context) {
 }
  
 module.exports.find = find;
+
+const updateSql =
+ `
+ BEGIN
+    
+    update address
+    set country = :country,
+        province_state = :state,
+        city = :city,
+        street = :street,
+        house_no = :house,
+        zip = :zip
+        where id = :id;
+   
+ END;`;
+ 
+async function update(emp) {
+  const new_review = Object.assign({}, emp);
+  console.log(new_review);
+  const result = await database.simpleExecute(updateSql, new_review);
+ 
+  if (result) {
+    return new_review;
+  } else {
+    return null;
+  }
+}
+ 
+module.exports.update = update;

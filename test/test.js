@@ -206,7 +206,7 @@ function testPUT(url, id, data) {
 
 /*    TEST CASES:       */ 
 
-describe('Black-Box request testing: ', function() {
+describe.skip('Black-Box request testing: ', function() {
 
 
     describe('GET requests: ', function() {
@@ -222,17 +222,17 @@ describe('Black-Box request testing: ', function() {
             "BIRTH_DATE": "1999-12-02T00:00:00.000Z"
         });
 
-        testGET('product', '4', {
-            "ID": 4,
-            "NAME": "product 004",
-            "PRICE": 4,
+        testGET('product', '1', {
+            "ID": 1,
+            "NAME": "product 001",
+            "PRICE": 1,
             "DESCR": "simple description",
             "SPEC": "simple specs",
-            "STOCK_NUM": 187,
+            "STOCK_NUM": 176,
             "URL": "dummyProductURL.com",
-            "CATEG_ID": 4,
-            "RATING": 2,
-            "MANUFACTURER_ID": 4,
+            "CATEG_ID": 1,
+            "RATING": 4.5,
+            "MANUFACTURER_ID": 1,
             "IS_ACTIVE": 1
         });
 
@@ -251,36 +251,36 @@ describe('Black-Box request testing: ', function() {
         });
 
 
-        testGET('cart', '406', {
-            "ID": 406,
-            "CLIENT_ID": 16,
-            "CREATE_DATE": "2020-07-20T03:57:56.031Z",
+        testGET('cart', '370', {
+            "ID": 370,
+            "CLIENT_ID": 10,
+            "CREATE_DATE": "2020-07-22T08:44:30.198Z",
             "CART_STATUS_ID": 1
         });
 
         
-        testGET('cart_content', '350', {
-            "ID": 350,
+        testGET('cart_content', '370', {
+            "ID": 370,
             "QUANTITY": 1,
-            "PRODUCT_ID": 5,
-            "CART_ID": 382
+            "PRODUCT_ID": 8,
+            "CART_ID": 370
         });
 
-        testGET('cart_history', '33', {
-            "ID": 33,
+        testGET('cart_history', '1', {
+            "ID": 1,
             "CART_STATUS_ID": 3,
-            "CLIENT_ID": 3,
-            "CREATE_DATE": "2020-07-20T03:54:48.040Z"
+            "CLIENT_ID": 1,
+            "CREATE_DATE": "2020-07-22T08:44:29.905Z"
         });
 
 
         testGET('cart_content_history', '1', {
             "ID": 1,
-            "PRODUCT_ID": 15,
-            "CART_HISTORY_ID": 33,
+            "PRODUCT_ID": 16,
+            "CART_HISTORY_ID": 1,
             "QUANTITY": 1,
-            "OLD_PRICE": 15,
-            "OLD_PRODUCT_NAME": "product 015"
+            "OLD_PRICE": 16,
+            "OLD_PRODUCT_NAME": "product 016"
         });
 
 
@@ -292,7 +292,7 @@ describe('Black-Box request testing: ', function() {
 
         testGET('pr_image', '1', {
             "ID": 1,
-            "URL": "URLURLURL",
+            "URL": "testURL",
             "PRODUCT_ID": 1
         });
 
@@ -307,12 +307,12 @@ describe('Black-Box request testing: ', function() {
 
         testGET('ord', '1', {
             "ID": 1,
-            "CREATE_DATE": "2020-07-20T04:03:46.740Z",
-            "BILL": 15,
+            "CREATE_DATE": "2020-07-22T08:44:30.591Z",
+            "BILL": 16,
             "ADDRESS_ID": 1,
             "ORD_STATUS_ID": 3,
-            "CART_HISTORY_ID": 33,
-            "CLIENT_ID": 3
+            "CART_HISTORY_ID": 1,
+            "CLIENT_ID": 1
         });
 
         testGET('ord_item', '1', {
@@ -349,7 +349,7 @@ describe('Black-Box request testing: ', function() {
     });
 
 
-    describe.skip('POST requests: ', function() {
+    describe('POST requests: ', function() {
 
         testPOST('client', {
         first_name: 'testName',
@@ -394,7 +394,7 @@ describe('Black-Box request testing: ', function() {
         testPOST('cart_content', {
             quantity: "1",
             product_id: "1",
-            cart_id: "430"
+            cart_id: "380"
         });
 
         testPOST('cart_status', {
@@ -431,7 +431,7 @@ describe('Black-Box request testing: ', function() {
 });
 
 
-describe.skip('User Scenario 1 (Valid)', function() {
+describe('User Scenario 1 (Valid)', function() {
     
 
 
@@ -441,7 +441,7 @@ describe.skip('User Scenario 1 (Valid)', function() {
                 .send({
                     first_name: 'Adil',
                     second_name: 'Botabekov',
-                    login: 'adilb99',
+                    login: 'adilb999',
                     pass: 'simplepass',
                     email: 'adilb99@kaist.ac.kr',
                     phone_num: 9999,
@@ -484,9 +484,7 @@ describe.skip('User Scenario 1 (Valid)', function() {
         request(app)
                 .post('/api/cart')
                 .send({
-                    client_id: 30,
-                    create_date: '2020/07/21 20:20:20',
-                    cart_status_id: 1
+                    client_id: 1,
                 })
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
@@ -507,7 +505,7 @@ describe.skip('User Scenario 1 (Valid)', function() {
             .send({
                 quantity: 1,
                 product_id: 14,
-                cart_id: 444
+                cart_id: 370
             })
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
@@ -526,16 +524,13 @@ describe.skip('User Scenario 1 (Valid)', function() {
         request(app)
             .post('/api/ord')
             .send({
-                client_id: 30,
-                cart_id: 444,
-                create_date: '2020/07/21 20:20:20',
+                cart_id: 353,
                 country: 'KZ',
                 state: 'Alm Obl',
                 city: 'Almaty',
                 street: 'Satpayeva',
                 house: '47',
-                zip: 'A15P5E1', 
-                ord_status_id: 1
+                zip: 'A15P5E1'
             })
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
@@ -552,14 +547,8 @@ describe.skip('User Scenario 1 (Valid)', function() {
 
     it('Deliver order (PUT)', function(done){
         request(app)
-            .put('/api/ord/306')
+            .put('/api/ord/304')
             .send({
-                country: 'KZ',
-                state: 'Alm Obl',
-                city: 'Almaty',
-                street: 'Satpayeva',
-                house: '47',
-                zip: 'A15P5E1', 
                 ord_status_id: 3
             })
             .set('Accept', 'application/json')
@@ -577,12 +566,8 @@ describe.skip('User Scenario 1 (Valid)', function() {
 });
 
 
-describe.skip('User Scenario 2 (Invalid)', function() {
+describe('User Scenario 2 (Invalid)', function() {
     
-    beforeEach('re-initialize db', function(){
-        
-    });
-
 
     it('create new user with invalid fields', function(done){
         request(app)
@@ -624,31 +609,12 @@ describe.skip('User Scenario 2 (Invalid)', function() {
             });
     });
 
-    it('Invalid input pair on new order', function(done){
-        request(app)
-            .post('/api/ord')
-            .send({
-                client_id: 10, // Supposed to be 18
-                cart_id: 388, 
-                create_date: '2020/07/21 20:20:20',
-                country: 'KZ',
-                state: 'asd',
-                city: 'asd',
-                street: 'asd',
-                house: 'asd',
-                zip: 'asd',
-                ord_status_id: 1
-            })
-            .expect(500, done)
-    });  
 
     it('Partial input on new order', function(done){
         request(app)
             .post('/api/ord')
             .send({
-                client_id: 19,
                 cart_id: 389, 
-                create_date: '2020/07/21 20:20:20',
                 country: 'KZ'
             })
             .expect(500, done)
@@ -680,12 +646,6 @@ describe.skip('User Scenario 2 (Invalid)', function() {
         request(app)
             .put('/api/ord/9')
             .send({
-                country: 'KZ',
-                state: 'asd',
-                city: 'asd',
-                street: 'asd',
-                house: 'asd',
-                zip: 'asd',
                 ord_status_id: 100 // no such status
             })
             .expect(500, done)

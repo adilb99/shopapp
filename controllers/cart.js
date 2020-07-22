@@ -34,8 +34,6 @@ function getCartFromRec(req) {
 
       const new_cart = {
         client_id: req.body.client_id,
-        create_date: req.body.create_date,
-        cart_status_id: req.body.cart_status_id
         };
    
     return new_cart;
