@@ -54,3 +54,6 @@ testing_a:
     - npm install instantclient
     - npm install oracledb
   script: npm test
+  tags:
+    - shopapp
+    - windows

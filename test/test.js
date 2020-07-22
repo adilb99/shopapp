@@ -8,7 +8,7 @@ var sinon = require('sinon');
 const request = require('supertest');
 
 
-const app = 'http://192.168.99.100:80';
+const app = 'http://192.168.99.100:3000';
 
 
 /*  FUNCTIONS (FOR LESS DUPLICATION):   */
