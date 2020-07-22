@@ -8,21 +8,18 @@ cache:
   paths:
     - node_modules/
 
-install_dependencies:
+build_and_start:
   stage: build
   before_script: 
     - npm i instantclient
     - npm i libaio
   script:
     - npm install
+  after_script:
+    - node .
   artifacts:
     paths:
       - node_modules/
-
-start_server:
-  stage: build
-  script:
-    - node .
 
 
 testing_a:
