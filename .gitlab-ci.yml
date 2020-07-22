@@ -13,7 +13,6 @@ install_dependencies:
   before_script: 
     - npm i instantclient
     - npm i libaio
-    - npm i libnsl
   script:
     - npm install
   artifacts:
