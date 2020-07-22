@@ -11,11 +11,11 @@ cache:
 install_dependencies:
   stage: build
   before_script: 
-    - yum install libaio
-    - yum install libnsl
+    - npm i instantclient
+    - npm i libaio
+    - npm i libnsl
   script:
     - npm install
-
   artifacts:
     paths:
       - node_modules/
