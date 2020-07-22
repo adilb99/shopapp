@@ -28,6 +28,7 @@ install_deps_and_test:
     - tree
     - cd
     - cd /root
+    - tree
     - npm install
     - npm test
   artifacts:
