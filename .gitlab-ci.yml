@@ -26,6 +26,8 @@ install_deps_and_test:
     - ldconfig
     - cd ..
     - cd ..
+    - yum install -y tree
+    - tree
     - npm install
     - npm test
   artifacts:
