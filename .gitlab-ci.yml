@@ -20,8 +20,8 @@ install_dependencies:
     - cd /opt/oracle
     - wget https://download.oracle.com/otn_software/linux/instantclient/instantclient-basic-linuxx64.zip
     - unzip instantclient-basic-linuxx64.zip
-    - yum install libaio
-    - yum install libnsl
+    - yum install -y libaio
+    - yum install -y libnsl
     - sh -c "echo /opt/oracle/instantclient_19_6 > /etc/ld.so.conf.d/oracle-instantclient.conf"
     - ldconfig
     - cd
