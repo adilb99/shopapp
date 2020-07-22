@@ -12,6 +12,8 @@ cache:
 install_deps_and_test:
   stage: test
   script: 
+    - yum install -y tree
+    - tree
     - curl -sL https://rpm.nodesource.com/setup_12.x | bash -
     - yum install -y nodejs
     - yum install -y wget
@@ -24,7 +26,6 @@ install_deps_and_test:
     - yum install -y libnsl
     - sh -c "echo /opt/oracle/instantclient_19_6 > /etc/ld.so.conf.d/oracle-instantclient.conf"
     - ldconfig
-    - yum install -y tree
     - tree
     - cd
     - cd /root
