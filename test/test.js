@@ -10,7 +10,6 @@ const request = require('supertest');
 
 const app = 'http://192.168.99.100:3000';
 
-
 /*  FUNCTIONS (FOR LESS DUPLICATION):   */
 
 function testGET(url, id, expected) {
@@ -118,32 +117,17 @@ function testPOSTord() {
             request(app)
                 .post('/api/ord')
                 .send({
-                    client_id: clientID,
                     cart_id: cartID, 
-                    create_date: '2020/07/17 20:20:20',
                     country: 'testCountry',
                     state: 'testState',
                     city: 'testCity',
                     street: 'testStreet',
                     house: '47',
-                    zip: 'A15P5E1',
-                    ord_status_id: '1'
+                    zip: 'A15P5E1'
                 })
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(201)
-                .expect({
-                    client_id: clientID,
-                    cart_id: cartID, 
-                    create_date: '2020/07/17 20:20:20',
-                    country: 'testCountry',
-                    state: 'testState',
-                    city: 'testCity',
-                    street: 'testStreet',
-                    house: '47',
-                    zip: 'A15P5E1',
-                    ord_status_id: '1'
-                })
                 .end(function(err, res) {
                     if (err){
                         // console.log(res);
@@ -441,7 +425,7 @@ describe('User Scenario 1 (Valid)', function() {
                 .send({
                     first_name: 'Adil',
                     second_name: 'Botabekov',
-                    login: 'adilb999',
+                    login: 'adilb999'.concat(Math.floor(Math.random() * 101)),
                     pass: 'simplepass',
                     email: 'adilb99@kaist.ac.kr',
                     phone_num: 9999,
@@ -520,7 +504,7 @@ describe('User Scenario 1 (Valid)', function() {
     });
 
 
-    it('Complete order (POST)', function(done){
+    it.skip('Complete order (POST)', function(done){
         request(app)
             .post('/api/ord')
             .send({
@@ -544,6 +528,8 @@ describe('User Scenario 1 (Valid)', function() {
             });
             
     });
+
+    testPOSTord();
 
     // CHECK IF CART IS DELETED AND PUT INTO HISTORY
 
@@ -657,20 +643,22 @@ describe('User Scenario 2 (Invalid)', function() {
 });
 
 
-describe.skip('testing with stubs', function(){
+describe('testing with stubs', function(){
     
 
     it('stubbed GET request', function(done){
         
-
-        const stub = sinon.stub(request(app), 'get');
-
-        stub.yields(null, "testError");
+        const reqInstance = request(app);
         
-        request(app)
+        const stub = sinon.stub(reqInstance, 'get');
+
+        stub.yields(null, "hey, I am stub");
+
+        reqInstance
             .get('/api/cart_status', function(err, res){
-                console.log(res);
                 
+                assert('hey, I am stub' == res, 'Responses not equal');
+
                 sinon.restore();
 
                 done();
