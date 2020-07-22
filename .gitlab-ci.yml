@@ -1,35 +1,35 @@
-image: node:latest
+image: centos:latest
 
 stages:
   # - install_dependencies
   # - build
   - test
 
-# cache:
-#   key: one-key-to-rule-them-all
-#   paths:
-#     - node_modules/
+cache:
+  paths:
+    - node_modules/
 
-# install_dependencies:
-#   stage: install_dependencies
-#   script: 
-#     - curl -sL https://rpm.nodesource.com/setup_12.x | bash -
-#     - yum install -y nodejs
-#     - yum install -y wget
-#     - yum install -y unzip
-#     - mkdir -p /opt/oracle
-#     - cd /opt/oracle
-#     - wget https://download.oracle.com/otn_software/linux/instantclient/instantclient-basic-linuxx64.zip
-#     - unzip instantclient-basic-linuxx64.zip
-#     - yum install -y libaio
-#     - yum install -y libnsl
-#     - sh -c "echo /opt/oracle/instantclient_19_6 > /etc/ld.so.conf.d/oracle-instantclient.conf"
-#     - ldconfig
-#     - cd
-#     - npm install
-#   artifacts:
-#     paths:
-#       - node_modules/
+install_deps_and_test:
+  stage: test
+  script: 
+    - curl -sL https://rpm.nodesource.com/setup_12.x | bash -
+    - yum install -y nodejs
+    - yum install -y wget
+    - yum install -y unzip
+    - mkdir -p /opt/oracle
+    - cd /opt/oracle
+    - wget https://download.oracle.com/otn_software/linux/instantclient/instantclient-basic-linuxx64.zip
+    - unzip instantclient-basic-linuxx64.zip
+    - yum install -y libaio
+    - yum install -y libnsl
+    - sh -c "echo /opt/oracle/instantclient_19_6 > /etc/ld.so.conf.d/oracle-instantclient.conf"
+    - ldconfig
+    - cd
+    - npm install
+    - npm test
+  artifacts:
+    paths:
+      - node_modules/
 
 # build_and_start:
 #   stage: build
@@ -44,6 +44,6 @@ stages:
 #   script: 
 #     - node .
 
-testing_a:
-  stage: test
-  script: npm test
+# testing_a:
+#   stage: test
+#   script: npm test
