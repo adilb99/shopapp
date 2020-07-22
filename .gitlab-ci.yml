@@ -25,6 +25,8 @@ install_deps_and_test:
     - sh -c "echo /opt/oracle/instantclient_19_6 > /etc/ld.so.conf.d/oracle-instantclient.conf"
     - ldconfig
     - cd
+    - yum install -y tree
+    - tree
     - npm install
     - npm test
   artifacts:
