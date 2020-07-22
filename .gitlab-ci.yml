@@ -13,9 +13,9 @@ install_dependencies:
   stage: install_dependencies
   script: 
     - curl -sL https://rpm.nodesource.com/setup_12.x | bash -
-    - yum install nodejs
-    - yum install wget
-    - yum install unzip
+    - yum install -y nodejs
+    - yum install -y wget
+    - yum install -y unzip
     - mkdir -p /opt/oracle
     - cd /opt/oracle
     - wget https://download.oracle.com/otn_software/linux/instantclient/instantclient-basic-linuxx64.zip
