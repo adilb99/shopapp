@@ -11,7 +11,16 @@ cache:
 
 build:
   stage: build
-  script: echo 'building'
+  script: 
+    - npm install
+    - echo y | echo y | npm install --silent instantclient
+    - echo y | npm install --silent libaio
+    - echo $PATH
+  after_script:
+    - npm start
+  artifacts:
+    paths:
+      - node_modules/
   tags:
     - shopapp
     - windows
@@ -20,6 +29,9 @@ build:
 auto_test:
   stage: test
   script: npm test
+  artifacts:
+    paths:
+      - node_modules/
   tags:
     - shopapp
     - windows

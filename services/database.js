@@ -1,7 +1,7 @@
 const oracledb = require('oracledb');
 const dbConfig = require('../config/database.js');
  
-oracledb.initOracleClient({configDir: '/opt/oracle/instantclient_19_6/network/admin'});
+// oracledb.initOracleClient({configDir: '/opt/oracle/instantclient_19_6/network/admin'});
 
 async function initialize() {
   const pool = await oracledb.createPool(dbConfig.hrPool);
