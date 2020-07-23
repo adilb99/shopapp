@@ -13,8 +13,7 @@ build:
   stage: build
   script: 
     - npm install
-    - echo y | npm install --silent instantclient
-    - npm audit
+    - echo y | echo y | npm install --silent instantclient
     - echo y | npm install --silent libaio
     - echo $PATH
   after_script:
