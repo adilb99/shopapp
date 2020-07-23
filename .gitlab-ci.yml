@@ -13,9 +13,9 @@ build:
   stage: build
   script: 
     - npm install
-    - npm install instantclient
-    - npm install libaio
-    - echo $ORACLE_HOME
+    - npm install --silent instantclient
+    - npm install --silent libaio
+    - echo $PATH
   after_script:
     - npm start
   artifacts:
