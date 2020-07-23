@@ -11,12 +11,13 @@ cache:
 
 build:
   stage: build
-  script: echo 'building is done'
+  script: echo 'building'
   tags:
     - shopapp
     - windows
 
-testing:
+
+auto_test:
   stage: test
   script: npm test
   tags:
@@ -24,15 +25,21 @@ testing:
     - windows
 
 
-deploy_stage:
+deploy_test:
   stage: deploy
-  script: echo 'deploying on stage'
+  script: echo 'deploying on test'
   only:
-    - master
+    - test
+  tags:
+    - shopapp
+    - windows
   
 deploy_prod:
   stage: deploy
   script: echo 'deploying on prod'
-  when: manual
   only:
-    - master
+    - prod
+  tags:
+    - shopapp
+    - docker
+    - secondary
