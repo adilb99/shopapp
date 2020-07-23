@@ -19,17 +19,11 @@ testing_a:
 testing_b:
   stage: test
   script: npm test test/other.test.js
-  tags:
-    -shopapp
-    -windows
-
+  
 
 build_app:
   stage: build
   script: echo 'build is done'
-  tags:
-    -shopapp
-    -windows
 
 deploy_stage:
   stage: deploy
