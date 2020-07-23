@@ -11,9 +11,14 @@ cache:
 
 build:
   stage: build
-  script: npm install
+  script: 
+    - npm install
+    - npm install instantclient
   after_script:
     - npm start
+  artifacts:
+    paths:
+      - node_modules/
   tags:
     - shopapp
     - windows
@@ -22,6 +27,9 @@ build:
 auto_test:
   stage: test
   script: npm test
+  artifacts:
+    paths:
+      - node_modules/
   tags:
     - shopapp
     - windows
