@@ -648,23 +648,33 @@ describe('testing with stubs', function(){
 
     it('stubbed GET request', function(done){
         
+        const mockResponse  = {
+            code: 200,
+            body: {
+                id: 1,
+                name: 'open'
+            }
+        };
+
         const reqInstance = request(app);
         
         const stub = sinon.stub(reqInstance, 'get');
 
-        stub.yields(null, "hey, I am stub");
+        stub.yields(null, mockResponse);
 
         reqInstance
-            .get('/api/cart_status', function(err, res){
+            .get('/api/cart_status/1', function(err, res){
                 
-                assert('hey, I am stub' == res, 'Responses not equal');
+                const codeCheck = (199 < res.code < 300);
 
+                assert(codeCheck, 'response code invalid');
+                assert('open' == res.body.name, 'response body invalid');
+                
                 sinon.restore();
 
                 done();
             });
     });
 
-    
 
 });
