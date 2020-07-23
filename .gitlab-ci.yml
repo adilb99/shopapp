@@ -1,36 +1,38 @@
 image: node:latest
 
 stages:
-  - test
   - build
+  - test
   - deploy
 
 cache:
   paths:
     - node_modules/
 
-testing_a:
-  stage: test
-  script: npm test test/test.js
+build:
+  stage: build
+  script: echo 'building is done'
   tags:
     - shopapp
     - windows
 
-testing_b:
+testing:
   stage: test
-  script: npm test test/other.test.js
-  
+  script: npm test
+  tags:
+    - shopapp
+    - windows
 
-build_app:
-  stage: build
-  script: echo 'build is done'
 
 deploy_stage:
   stage: deploy
   script: echo 'deploying on stage'
-  
+  only:
+    - master
   
 deploy_prod:
   stage: deploy
   script: echo 'deploying on prod'
   when: manual
+  only:
+    - master
