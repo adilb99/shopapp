@@ -11,7 +11,9 @@ cache:
 
 build:
   stage: build
-  script: echo 'building'
+  script: npm install
+  after_script:
+    - npm start
   tags:
     - shopapp
     - windows
