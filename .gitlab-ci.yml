@@ -13,11 +13,8 @@ build:
   stage: build
   script: 
     - npm install
-    - echo y | echo y | npm install --silent instantclient
-    - echo y | npm install --silent libaio
-    - echo $PATH
-  after_script:
-    - npm start
+  except:
+    - auth_feature
   artifacts:
     paths:
       - node_modules/
@@ -26,9 +23,22 @@ build:
     - windows
 
 
-auto_test:
+auto_test_on_commit:
   stage: test
   script: npm test
+  except:
+    - auth_feature
+  artifacts:
+    paths:
+      - node_modules/
+  tags:
+    - shopapp
+    - windows
+
+auto_test_on_merge:
+  stage: test
+  script: npm test
+  only: merge_requests
   artifacts:
     paths:
       - node_modules/
