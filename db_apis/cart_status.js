@@ -27,7 +27,7 @@ module.exports.find = find;
 
 const createSql = `
     BEGIN
-        INSERT INTO cart_status VALUES (seq_cart_status.NEXTVAL, :name);
+        new_cart_status(:name, :id);
     END;
     `;
  
@@ -36,14 +36,14 @@ async function create(emp) {
     console.log(new_status);
 
 
-//   new_client.id = {
-//     dir: oracledb.BIND_OUT,
-//     type: oracledb.INTEGER
-//   }
+  new_status.id = {
+    dir: oracledb.BIND_OUT,
+    type: oracledb.INTEGER
+  }
  
   const result = await database.simpleExecute(createSql, new_status);
  
-//   new_client.id = result.outBinds.id[0];
+  new_status.id = result.outBinds.id;
  
   return new_status;
 }

@@ -27,23 +27,23 @@ module.exports.find = find;
 
 const procedure_new_manuf = `
     BEGIN
-        new_manuf(:name, :descr, :logo_url);
+        new_manuf(:name, :descr, :logo_url, :id);
     END;
     `;
  
 async function create(emp) {
   const new_manuf = Object.assign({}, emp);
-    console.log(new_manuf);
+  
 
 
-//   new_client.id = {
-//     dir: oracledb.BIND_OUT,
-//     type: oracledb.INTEGER
-//   }
+  new_manuf.id = {
+    dir: oracledb.BIND_OUT,
+    type: oracledb.INTEGER
+  }
  
   const result = await database.simpleExecute(procedure_new_manuf, new_manuf);
  
-//   new_client.id = result.outBinds.id[0];
+  new_manuf.id = result.outBinds.id;
  
   return new_manuf;
 }

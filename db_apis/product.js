@@ -27,7 +27,7 @@ module.exports.find = find;
 
 const procedure_new_product = `
     BEGIN
-        new_product(:name, :price, :descr, :spec, :stock_num, :url, :manufacturer_id, :categ_id, :is_active, :rating);
+        new_product(:name, :price, :descr, :spec, :stock_num, :url, :manufacturer_id, :categ_id, :is_active, :rating, :id);
     END;
     `;
 
@@ -38,16 +38,14 @@ async function create(emp) {
     
 
 
-//   new_product.id = {
-//     dir: oracledb.BIND_OUT,
-//     type: oracledb.INTEGER
-//   }
-
-  console.log(new_product);
+  new_product.id = {
+    dir: oracledb.BIND_OUT,
+    type: oracledb.INTEGER
+  }
 
   const result = await database.simpleExecute(procedure_new_product, new_product);
  
-//   new_product.id = result.outBinds.id[0];
+  new_product.id = result.outBinds.id;
  
   return new_product;
 }

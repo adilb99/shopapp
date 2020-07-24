@@ -27,25 +27,24 @@ module.exports.find = find;
 
 const procedure_new_client = `
     BEGIN
-        new_client(:first_name, :second_name, :login, :pass, :email, :phone_num, to_date(:birth_date, 'yyyy/mm/dd'));
+        new_client(:first_name, :second_name, :login, :pass, :email, :phone_num, to_date(:birth_date, 'yyyy/mm/dd'), :id);
     END;
     `;
  
 async function create(emp) {
   const new_client = Object.assign({}, emp);
-    console.log(new_client);
+  
 
-
-  // new_client.id = {
-  //   dir: oracledb.BIND_OUT,
-  //   type: oracledb.NUMBER
-  // }
+  new_client.id = {
+    dir: oracledb.BIND_OUT,
+    type: oracledb.NUMBER
+  }
  
   const result = await database.simpleExecute(procedure_new_client, new_client);
  
-  // console.log(result.outBinds);
-  // new_client.id = result.outBinds.id[0];
+  new_client.id = result.outBinds.id;
 
+  console.log(new_client);
  
   return new_client;
 }

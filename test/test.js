@@ -141,23 +141,82 @@ function testPOSTord() {
 
         
         var getID;
+        var addrID;
 
         request(app)
         .get('/api/sequence/SEQ_ORD')
         .then(function(response){
             getID = response.body.LAST_NUMBER;
         });
+
+        request(app)
+        .get('/api/sequence/SEQ_ADDRESS')
+        .then(function(response){
+            addrID = response.body.LAST_NUMBER;
+        });
         
 
-        it('GET request to check validity', function(done) {
+        it('GET ord', function(done) {
             request(app)
                 .get('/api/ord/'.concat(getID))
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
-                .expect(200, done);
+                .expect(200, function(err, res){
+                    if(err) {
+                        done(err);
+                    }
+                    assert(res.body.CART_HISTORY_ID == cartID, 'cart_history_id not equal');
+                    assert(res.body.ID == getID, 'ID mismatch');
+                    assert(res.body.ORD_STATUS_ID == 1, 'ORD_STATUS_ID mismatch');
+                    done()
+                });
         });
 
 
+        it('GET address', function(done) {
+            request(app)
+                .get('/api/address/'.concat(addrID))
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200, function(err, res){
+                    if(err) {
+                        done(err);
+                    }
+
+                    
+                    assert(res.body.COUNTRY == 'testCountry', 'COUNTRY mismatch');
+                    assert(res.body.PROVINCE_STATE == 'testState', 'STATE mismatch');
+                    assert(res.body.CITY == 'testCity', 'CITY mismatch');
+                    assert(res.body.HOUSE_NO == '47', 'house_no mismatch');
+                    assert(res.body.ZIP == 'A15P5E1', 'ZIP mismatch');
+
+                    done()
+                });
+        });
+
+
+        it('GET to check if cart was deleted', function(done){
+            request(app)
+                .get('/api/cart/'.concat(cartID))
+                .expect(404, done);
+
+        });
+
+        it('GET to check if cart was moved to history', function(done){
+            request(app)
+                .get('/api/cart_history/'.concat(cartID))
+                .expect(200, function(err, res){
+                    if(err){
+                        done(err);
+                    }
+
+                    assert(res.body.CART_STATUS_ID == 3, 'status id mismatch');
+                    assert(res.body.ID == cartID, 'id mismatch');
+
+                    done();
+
+                });
+        });
 
     });
 
@@ -418,32 +477,64 @@ describe.skip('Black-Box request testing: ', function() {
 describe('User Scenario 1 (Valid)', function() {
     
 
+    describe('Register User', function(){
+        
+        let getID;
+        
+        it('(POST new client)', function(done){
+            request(app)
+                    .post('/api/client')
+                    .send({
+                        first_name: 'Adil',
+                        second_name: 'Botabekov',
+                        login: 'randomLogin'.concat(Math.floor(Math.random() * 101)),
+                        pass: 'simplepass',
+                        email: 'adilb99@kaist.ac.kr',
+                        phone_num: 9999,
+                        birth_date: '1999/12/02'
+                    })
+                    .set('Accept', 'application/json')
+                    .expect('Content-Type', /json/)
+                    .expect(201)
+                    .end(function(err, res) {
+                        if (err){
+                            // console.log(res);
+                            return done(err);
+                        }
+                        // console.log(res.body);
+                        done();
+                    });
 
-    it('Register user (POST new client)', function(done){
+        });
+
         request(app)
-                .post('/api/client')
-                .send({
-                    first_name: 'Adil',
-                    second_name: 'Botabekov',
-                    login: 'adilb999'.concat(Math.floor(Math.random() * 101)),
-                    pass: 'simplepass',
-                    email: 'adilb99@kaist.ac.kr',
-                    phone_num: 9999,
-                    birth_date: '1999/12/02'
-                })
-                .set('Accept', 'application/json')
-                .expect('Content-Type', /json/)
-                .expect(201)
-                .end(function(err, res) {
-                    if (err){
-                        // console.log(res);
-                        return done(err);
+            .get('/api/sequence/SEQ_CLIENT')
+            .then(function(res){
+                getID = res.body.LAST_NUMBER;
+            });
+
+        it('GET client to check', function(done){
+            request(app)
+                .get('/api/client/'.concat(getID))
+                .expect(200, function(err, res){
+                    if(err) {
+                        done(err);
                     }
-                    // console.log(res.body);
+
+                    assert(res.body.ID == getID, 'ID mismatch');
+                    assert(res.body.FIRST_NAME == 'Adil', 'name mismatch');
+                    assert(res.body.SECOND_NAME == 'Botabekov', 'surname mismatch');
+                    assert(res.body.PASS == 'simplepass', 'pass mismatch');
+                    assert(res.body.EMAIL == 'adilb99@kaist.ac.kr', 'email mismatch');
+                    assert(res.body.PHONE_NUM == 9999, 'phone mismatch');
+
                     done();
                 });
+        });
+
 
     });
+    
 
 
     it('View all products', function(done){
@@ -464,11 +555,67 @@ describe('User Scenario 1 (Valid)', function() {
     });
 
 
-    it('Create cart (POST new cart)', function(done){
+    describe('Create cart', function(){
+        
+        let getID;
+        
+        it('Create cart (POST new cart)', function(done){
+            request(app)
+                    .post('/api/cart')
+                    .send({
+                        client_id: 1,
+                    })
+                    .set('Accept', 'application/json')
+                    .expect('Content-Type', /json/)
+                    .expect(201)
+                    .end(function(err, res) {
+                        if (err){
+                            // console.log(res);
+                            return done(err);
+                        }
+                        done();
+                    });
+        });
+
         request(app)
-                .post('/api/cart')
+            .get('/api/sequence/SEQ_CART')
+            .then(function(res){
+                getID = res.body.LAST_NUMBER;
+            });
+        
+        it('GET request to check', function(done){
+            request(app)
+                .get('/api/cart/'.concat(getID))
+                .expect(200, function(err, res){
+                    if(err) {
+                        done(err);
+                    }
+
+
+                    assert(res.body.ID == getID, 'id mismatch');
+                    assert(res.body.CART_STATUS_ID == 1, 'status id mismatch');
+                    assert(res.body.CLIENT_ID == 1, 'client id mismatch');
+
+                    done();
+                });
+        });
+
+
+    });
+
+    
+
+    describe('Populate the cart', function(){
+
+        let getID;
+
+        it('Populate the cart with selected product (POST)', function(done){
+            request(app)
+                .post('/api/cart_content')
                 .send({
-                    client_id: 1,
+                    quantity: 1,
+                    product_id: 14,
+                    cart_id: 370
                 })
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
@@ -480,76 +627,75 @@ describe('User Scenario 1 (Valid)', function() {
                     }
                     done();
                 });
-    });
+        });
 
-
-    it('Populate the cart with selected product (POST)', function(done){
         request(app)
-            .post('/api/cart_content')
-            .send({
-                quantity: 1,
-                product_id: 14,
-                cart_id: 370
-            })
-            .set('Accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(201)
-            .end(function(err, res) {
-                if (err){
-                    // console.log(res);
-                    return done(err);
-                }
-                done();
+            .get('/api/sequence/SEQ_CART_CONTENT')
+            .then(function(res){
+                getID = res.body.LAST_NUMBER;
             });
+
+        it('GET req to check', function(done){
+            request(app)
+                .get('/api/cart_content/'.concat(getID))
+                .expect(200, function(err,res){
+                    if(err){
+                        done(err);
+                    }
+
+                    assert(res.body.ID == getID, 'id mismatch');
+                    assert(res.body.CART_ID == 370, 'cart id mismatch');
+                    assert(res.body.PRODUCT_ID == 14, 'product id mismatch');
+                    assert(res.body.QUANTITY == 1, 'quantity mismatch');
+                    
+                    done();
+
+                });
+        });
+
     });
 
-
-    it.skip('Complete order (POST)', function(done){
-        request(app)
-            .post('/api/ord')
-            .send({
-                cart_id: 353,
-                country: 'KZ',
-                state: 'Alm Obl',
-                city: 'Almaty',
-                street: 'Satpayeva',
-                house: '47',
-                zip: 'A15P5E1'
-            })
-            .set('Accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(201)
-            .end(function(err, res) {
-                if (err){
-                    // console.log(res);
-                    return done(err);
-                }
-                done();
-            });
-            
-    });
 
     testPOSTord();
 
     // CHECK IF CART IS DELETED AND PUT INTO HISTORY
 
-    it('Deliver order (PUT)', function(done){
-        request(app)
-            .put('/api/ord/304')
-            .send({
-                ord_status_id: 3
-            })
-            .set('Accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(200)
-            .end(function(err, res) {
-                if (err){
-                    // console.log(res);
-                    return done(err);
-                }
-                done();
-            });
+    describe('Deliver order', function(){
+
+        it('(PUT order)', function(done){
+            request(app)
+                .put('/api/ord/304')
+                .send({
+                    ord_status_id: 3
+                })
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200)
+                .end(function(err, res) {
+                    if (err){
+                        // console.log(res);
+                        return done(err);
+                    }
+                    done();
+                });
+        });
+
+        it('GET request to check', function(done){
+            request(app)
+                .get('/api/ord/304')
+                .expect(200, function(err, res){
+                    if(err){
+                        done(err);
+                    }
+
+                    assert(res.body.ORD_STATUS_ID == 3, 'status mismatch');
+                    done();
+
+                });
+        });
+
     });
+    
 
 });
 
@@ -678,3 +824,6 @@ describe('testing with stubs', function(){
 
 
 });
+
+
+// testPOSTord();

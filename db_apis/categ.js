@@ -27,7 +27,7 @@ module.exports.find = find;
 
 const procedure_new_categ = `
     BEGIN
-        new_categ(:name, :descr);
+        new_categ(:name, :descr, :id);
     END;
     `;
  
@@ -36,14 +36,14 @@ async function create(emp) {
     console.log(new_categ);
 
 
-//   new_client.id = {
-//     dir: oracledb.BIND_OUT,
-//     type: oracledb.INTEGER
-//   }
+  new_categ.id = {
+    dir: oracledb.BIND_OUT,
+    type: oracledb.INTEGER
+  }
  
   const result = await database.simpleExecute(procedure_new_categ, new_categ);
  
-//   new_client.id = result.outBinds.id[0];
+  new_categ.id = result.outBinds.id;
  
   return new_categ;
 }

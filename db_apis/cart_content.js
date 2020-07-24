@@ -27,23 +27,22 @@ module.exports.find = find;
 
 const procedure_new_content = `
     BEGIN
-        add_to_cart_byID(:cart_id, :product_id, :quantity);
+        add_to_cart_byID(:cart_id, :product_id, :quantity, :id);
     END;
     `;
  
 async function create(emp) {
   const new_content = Object.assign({}, emp);
-    console.log(new_content);
+  
 
-
-//   new_client.id = {
-//     dir: oracledb.BIND_OUT,
-//     type: oracledb.INTEGER
-//   }
+  new_content.id = {
+    dir: oracledb.BIND_OUT,
+    type: oracledb.INTEGER
+  }
  
   const result = await database.simpleExecute(procedure_new_content, new_content);
  
-//   new_client.id = result.outBinds.id[0];
+  new_content.id = result.outBinds.id;
  
   return new_content;
 }

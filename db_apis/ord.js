@@ -27,23 +27,63 @@ module.exports.find = find;
 
 const createSql = `
     BEGIN
-        new_order_byID(:cart_id, systimestamp, :country, :state, :city, :street, :house, :zip);
+        :create_date := systimestamp;
+        new_order_byID(:cart_id, :create_date, :country, :province_state, :city, :street, :house_no, :zip, :address_id, :id, :ord_status_id, :client_id, :bill);
     END;
     `;
  
 async function create(emp) {
   const new_order = Object.assign({}, emp);
-    console.log(new_order);
+  
 
 
-//   new_client.id = {
-//     dir: oracledb.BIND_OUT,
-//     type: oracledb.INTEGER
-//   }
+  new_order.id = {
+    dir: oracledb.BIND_OUT,
+    type: oracledb.INTEGER
+  };
+
+  new_order.ord_status_id = {
+    dir: oracledb.BIND_OUT,
+    type: oracledb.INTEGER
+  };
+
+  new_order.address_id = {
+    dir: oracledb.BIND_OUT,
+    type: oracledb.INTEGER
+  };
+
+  new_order.client_id = {
+    dir: oracledb.BIND_OUT,
+    type: oracledb.INTEGER
+  }
+
+  new_order.bill = {
+    dir: oracledb.BIND_OUT,
+    type: oracledb.INTEGER
+  }
+
+  new_order.create_date = {
+    dir: oracledb.BIND_OUT,
+    type: oracledb.DB_TYPE_TIMESTAMP
+  }
  
   const result = await database.simpleExecute(createSql, new_order);
  
-//   new_client.id = result.outBinds.id[0];
+  new_order.id = result.outBinds.id;
+  new_order.address_id = result.outBinds.address_id;
+  new_order.ord_status_id = result.outBinds.ord_status_id;
+  new_order.client_id = result.outBinds.client_id;
+  new_order.bill = result.outBinds.bill;
+  new_order.create_date = result.outBinds.create_date;
+  new_order.cart_history_id = new_order.cart_id;
+
+  delete new_order.cart_id;
+  delete new_order.country;
+  delete new_order.province_state;
+  delete new_order.city;
+  delete new_order.street;
+  delete new_order.house_no;
+  delete new_order.zip;
  
   return new_order;
 }

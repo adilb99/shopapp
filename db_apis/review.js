@@ -27,7 +27,7 @@ module.exports.find = find;
 
 const createSql = `
     BEGIN
-        new_review_byID(:client_id, :product_id, :rating, :title, :text);
+        new_review_byID(:client_id, :product_id, :rating, :title, :text, :id);
     END;
     `;
  
@@ -36,14 +36,14 @@ async function create(emp) {
     console.log(new_review);
 
 
-//   new_client.id = {
-//     dir: oracledb.BIND_OUT,
-//     type: oracledb.INTEGER
-//   }
+  new_review.id = {
+    dir: oracledb.BIND_OUT,
+    type: oracledb.INTEGER
+  }
  
   const result = await database.simpleExecute(createSql, new_review);
  
-//   new_client.id = result.outBinds.id[0];
+  new_review.id = result.outBinds.id;
  
   return new_review;
 }
