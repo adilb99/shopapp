@@ -27,9 +27,9 @@ auto_test_on_commit:
   stage: test
   script: npm test
   rules:
-    - if: '$CI_COMMIT_BRANCH == master'
-    - if: '$CI_COMMIT_BRANCH == test'
-    - if: '$CI_COMMIT_BRANCH == prod'
+    - if: $CI_COMMIT_BRANCH == 'master'
+    - if: $CI_COMMIT_BRANCH == 'test'
+    - if: $CI_COMMIT_BRANCH == 'prod'
   artifacts:
     paths:
       - node_modules/
