@@ -38,7 +38,8 @@ auto_test_on_commit:
 auto_test_on_merge:
   stage: test
   script: npm test
-  only: merge_requests
+  only: 
+    - merge_requests
   artifacts:
     paths:
       - node_modules/
