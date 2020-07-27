@@ -42,10 +42,10 @@ function getEntryFromRec(req) {
       const new_entry = {
         cart_id: req.body.cart_id,  
         country: req.body.country,
-        province_state: req.body.state,
+        province_state: req.body.province_state,
         city: req.body.city,
         street: req.body.street,
-        house_no: req.body.house,
+        house_no: req.body.house_no,
         zip: req.body.zip,
         };
    

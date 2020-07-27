@@ -27,6 +27,7 @@ module.exports.find = find;
 
 const procedure_new_client = `
     BEGIN
+        :standard_date := to_date(:birth_date, 'yyyy/mm/dd');
         new_client(:first_name, :second_name, :login, :pass, :email, :phone_num, to_date(:birth_date, 'yyyy/mm/dd'), :id);
     END;
     `;
@@ -38,11 +39,19 @@ async function create(emp) {
   new_client.id = {
     dir: oracledb.BIND_OUT,
     type: oracledb.NUMBER
+  };
+
+  new_client.standard_date = {
+    dir: oracledb.BIND_OUT,
+    type: oracledb.DB_TYPE_DATE
   }
  
   const result = await database.simpleExecute(procedure_new_client, new_client);
  
   new_client.id = result.outBinds.id;
+  new_client.birth_date = result.outBinds.standard_date;
+
+  delete new_client.standard_date;
 
   console.log(new_client);
  
@@ -52,7 +61,11 @@ async function create(emp) {
 module.exports.create = create;
 
 const updateSql =
- `update client
+ `BEGIN
+
+ :new_date := to_date(:birth_date, 'yyyy/mm/dd');
+
+ update client
   set first_name = :first_name,
     second_name = :second_name,
     email = :email,
@@ -60,14 +73,25 @@ const updateSql =
     birth_date = to_date(:birth_date, 'yyyy/mm/dd'),
     login = :login,
     pass = :pass
-  where id = :id`;
+  where id = :id;
+  
+  END;`;
  
 async function update(emp) {
   const new_client = Object.assign({}, emp);
-  console.log(new_client);
+  
+  new_client.new_date = {
+    dir: oracledb.BIND_OUT,
+    type: oracledb.DB_TYPE_DATE
+  }
+
   const result = await database.simpleExecute(updateSql, new_client);
  
-  if (result.rowsAffected && result.rowsAffected === 1) {
+  new_client.birth_date = result.outBinds.new_date;
+  delete new_client.new_date;
+
+
+  if (result) {
     return new_client;
   } else {
     return null;
