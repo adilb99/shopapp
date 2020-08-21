@@ -5,7 +5,9 @@ async function get(req, res, next) {
     const context = {};
  
     context.id = parseInt(req.params.id, 10);
- 
+    context.product_id = parseInt(req.query.product_id, 10);
+    context.client_id = parseInt(req.query.client_id, 10);
+
     const rows = await table.find(context);
  
     if (req.params.id) {

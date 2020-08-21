@@ -15,6 +15,28 @@ async function find(context) {
  
     query += " where id = :id";
   }
+
+  if(context.product_id) {
+    binds.product_id = context.product_id;
+
+    if(query.includes('where')) {
+      query += ' and product_id = :product_id';
+    } else {
+      query += ' where product_id = :product_id';
+    }
+
+  }
+
+  if(context.client_id) {
+    binds.client_id = context.client_id;
+
+    if(query.includes('where')) {
+      query += ' and client_id = :client_id';
+    } else {
+      query += ' where client_id = :client_id';
+    }
+
+  }
  
   const result = await database.simpleExecute(query, binds);
  
