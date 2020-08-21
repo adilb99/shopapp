@@ -5,7 +5,10 @@ async function get(req, res, next) {
     const context = {};
  
     context.id = parseInt(req.params.id, 10);
- 
+    context.price_sort = req.query.price_sort;
+    context.categ_id = req.query.categ_id;
+    context.manuf_id = req.query.manuf_id;
+
     const rows = await product.find(context);
  
     if (req.params.id) {

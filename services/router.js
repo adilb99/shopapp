@@ -19,7 +19,6 @@ const sequence = require('../controllers/sequence.js');
 const clientLogin = require('../controllers/clientLogin.js');
 const productCateg = require('../controllers/productCateg.js');
 
-
 router.route('/client/:id?')
   .get(client.get)
   .post(client.post)
@@ -40,7 +39,6 @@ router.route('/product/:id?')
 
 router.route('/product/categ/:categ_id?') // NEW!!!
     .get(productCateg.get);
-
 
 
 router.route('/manuf/:id?')

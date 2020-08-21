@@ -15,7 +15,37 @@ async function find(context) {
  
     query += " where id = :id";
   }
+
+  if (context.categ_id) {
+    binds.categ_id = context.categ_id;
+
+    if(query.includes('where')){
+      query += " and categ_id = :categ_id"
+    } else {
+      query += " where categ_id = :categ_id"
+    }
+
+  }
+
+  if (context.manuf_id) {
+    binds.manuf_id = context.manuf_id;
+
+    if(query.includes('where')){
+      query += " and manufacturer_id = :manuf_id"
+    } else {
+      query += " where manufacturer_id = :manuf_id"
+    }
+
+  }
+
+  if(context.price_sort){
+    // binds.price_sort = context.price_sort;
+
+    query += " order by price " + context.price_sort;
+  }
  
+  console.log(query);
+
   const result = await database.simpleExecute(query, binds);
  
   return result.rows;
