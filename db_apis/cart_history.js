@@ -15,6 +15,26 @@ async function find(context) {
  
     query += " where id = :id";
   }
+
+  if (context.client_id) {
+    binds.client_id = context.client_id;
+
+    if(query.includes('where')){
+      query += ' and client_id = :client_id';
+    } else {
+      query += ' where client_id = :client_id';
+    }
+  }
+
+  if (context.cart_status_id) {
+    binds.cart_status_id = context.cart_status_id;
+
+    if(query.includes('where')){
+      query += ' and cart_status_id = :cart_status_id';
+    } else {
+      query += ' where cart_status_id = :cart_status_id';
+    }
+  }
  
   const result = await database.simpleExecute(query, binds);
  

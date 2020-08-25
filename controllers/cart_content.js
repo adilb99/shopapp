@@ -5,7 +5,9 @@ async function get(req, res, next) {
     const context = {};
  
     context.id = parseInt(req.params.id, 10);
- 
+    
+    context.cart_id = parseInt(req.query.cart_id, 10);
+
     const rows = await table.find(context);
  
     if (req.params.id) {
@@ -26,11 +28,6 @@ module.exports.get = get;
 
 
 function getEntryFromRec(req) {
-    // var new_entry = {
-    //   quantity: req.query.quantity,
-    //   product_id: req.query.product_id,
-    //   cart_id: req.query.cart_id
-    // };
 
       const new_entry = {
         quantity: req.body.quantity,
