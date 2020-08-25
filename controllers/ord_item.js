@@ -6,6 +6,8 @@ async function get(req, res, next) {
  
     context.id = parseInt(req.params.id, 10);
  
+    context.ord_id = parseInt(req.query.ord_id, 10);
+
     const rows = await table.find(context);
  
     if (req.params.id) {

@@ -15,6 +15,36 @@ async function find(context) {
  
     query += " where id = :id";
   }
+
+  if(context.client_id) {
+    binds.client_id = context.client_id;
+
+    if(query.includes('where')) {
+      query += ' and client_id = :client_id';
+    } else {
+      query += ' where client_id = :client_id';
+    }
+  }
+
+  if(context.cart_history_id) {
+    binds.cart_history_id = context.cart_history_id;
+
+    if(query.includes('where')) {
+      query += ' and cart_history_id = :cart_history_id';
+    } else {
+      query += ' where cart_history_id = :cart_history_id';
+    }
+  }
+
+  if(context.ord_status_id) {
+    binds.ord_status_id = context.ord_status_id;
+
+    if(query.includes('where')) {
+      query += ' and ord_status_id = :ord_status_id';
+    } else {
+      query += ' where ord_status_id = :ord_status_id';
+    }
+  }
  
   const result = await database.simpleExecute(query, binds);
  
