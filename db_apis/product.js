@@ -43,6 +43,16 @@ async function find(context) {
 
     query += " order by price " + context.price_sort;
   }
+
+  if(context.rating_sort){
+
+    if(query.includes('order by')) {
+      query += ', rating ' + context.rating_sort; 
+    } else {
+      query += " order by rating " + context.rating_sort;
+    }
+    
+  }
  
   console.log(query);
 

@@ -6,6 +6,7 @@ async function get(req, res, next) {
  
     context.id = parseInt(req.params.id, 10);
     context.price_sort = req.query.price_sort;
+    context.rating_sort = req.query.rating_sort;
     context.categ_id = req.query.categ_id;
     context.manuf_id = req.query.manuf_id;
 
