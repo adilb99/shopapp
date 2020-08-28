@@ -15,6 +15,18 @@ async function find(context) {
  
     query += " where id = :id";
   }
+
+
+  if (context.ord_id) {
+    binds.ord_id = context.ord_id;
+
+    if(query.includes('where')){
+      query += ' and ord_id = :ord_id';
+    } else {
+      query += ' where ord_id = :ord_id';
+    }
+
+  }
  
   const result = await database.simpleExecute(query, binds);
  

@@ -5,6 +5,10 @@ async function get(req, res, next) {
     const context = {};
  
     context.id = parseInt(req.params.id, 10);
+
+    context.client_id = parseInt(req.query.client_id, 10);
+    context.cart_history_id = parseInt(req.query.cart_history_id, 10);
+    context.ord_status_id = parseInt(req.query.ord_status_id, 10);
  
     const rows = await table.find(context);
  
@@ -42,10 +46,10 @@ function getEntryFromRec(req) {
       const new_entry = {
         cart_id: req.body.cart_id,  
         country: req.body.country,
-        state: req.body.state,
+        province_state: req.body.province_state,
         city: req.body.city,
         street: req.body.street,
-        house: req.body.house,
+        house_no: req.body.house_no,
         zip: req.body.zip,
         };
    

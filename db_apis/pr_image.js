@@ -27,23 +27,22 @@ module.exports.find = find;
 
 const procedure_new_image = `
     BEGIN
-        INSERT INTO product_image VALUES (seq_product_image.NEXTVAL, :url, :product_id);
+        new_pr_image(:url, :product_id, :id);
     END;
     `;
  
 async function create(emp) {
   const new_image = Object.assign({}, emp);
-    console.log(new_image);
 
 
-//   new_client.id = {
-//     dir: oracledb.BIND_OUT,
-//     type: oracledb.INTEGER
-//   }
+  new_image.id = {
+    dir: oracledb.BIND_OUT,
+    type: oracledb.INTEGER
+  }
  
   const result = await database.simpleExecute(procedure_new_image, new_image);
  
-//   new_client.id = result.outBinds.id[0];
+  new_image.id = result.outBinds.id;
  
   return new_image;
 }

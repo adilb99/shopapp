@@ -15,7 +15,47 @@ async function find(context) {
  
     query += " where id = :id";
   }
+
+  if (context.categ_id) {
+    binds.categ_id = context.categ_id;
+
+    if(query.includes('where')){
+      query += " and categ_id = :categ_id"
+    } else {
+      query += " where categ_id = :categ_id"
+    }
+
+  }
+
+  if (context.manuf_id) {
+    binds.manuf_id = context.manuf_id;
+
+    if(query.includes('where')){
+      query += " and manufacturer_id = :manuf_id"
+    } else {
+      query += " where manufacturer_id = :manuf_id"
+    }
+
+  }
+
+  if(context.price_sort){
+    // binds.price_sort = context.price_sort;
+
+    query += " order by price " + context.price_sort;
+  }
+
+  if(context.rating_sort){
+
+    if(query.includes('order by')) {
+      query += ', rating ' + context.rating_sort; 
+    } else {
+      query += " order by rating " + context.rating_sort;
+    }
+    
+  }
  
+  console.log(query);
+
   const result = await database.simpleExecute(query, binds);
  
   return result.rows;
@@ -27,7 +67,7 @@ module.exports.find = find;
 
 const procedure_new_product = `
     BEGIN
-        new_product(:name, :price, :descr, :spec, :stock_num, :url, :manufacturer_id, :categ_id, :is_active, :rating);
+        new_product(:name, :price, :descr, :spec, :stock_num, :url, :manufacturer_id, :categ_id, :is_active, :rating, :id);
     END;
     `;
 
@@ -38,16 +78,14 @@ async function create(emp) {
     
 
 
-//   new_product.id = {
-//     dir: oracledb.BIND_OUT,
-//     type: oracledb.INTEGER
-//   }
-
-  console.log(new_product);
+  new_product.id = {
+    dir: oracledb.BIND_OUT,
+    type: oracledb.INTEGER
+  }
 
   const result = await database.simpleExecute(procedure_new_product, new_product);
  
-//   new_product.id = result.outBinds.id[0];
+  new_product.id = result.outBinds.id;
  
   return new_product;
 }

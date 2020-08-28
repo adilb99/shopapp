@@ -15,6 +15,26 @@ async function find(context) {
  
     query += " where id = :id";
   }
+
+  if (context.client_id) {
+    binds.client_id = context.client_id;
+
+    if(query.includes('where')){
+      query += ' and client_id = :client_id';
+    } else {
+      query += ' where client_id = :client_id';
+    }
+  }
+
+  if (context.cart_status_id) {
+    binds.cart_status_id = context.cart_status_id;
+
+    if(query.includes('where')){
+      query += ' and cart_status_id = :cart_status_id';
+    } else {
+      query += ' where cart_status_id = :cart_status_id';
+    }
+  }
  
   const result = await database.simpleExecute(query, binds);
  
@@ -27,23 +47,34 @@ module.exports.find = find;
 
 const procedure_new_cart = `
     BEGIN
-        new_cart_byID(:client_id, systimestamp);
+        :create_date := systimestamp;
+        new_cart_byID(:client_id, :create_date, :id, :cart_status_id);
     END;
     `;
  
 async function create(emp) {
   const new_cart = Object.assign({}, emp);
-    console.log(new_cart);
 
+  new_cart.id = {
+    dir: oracledb.BIND_OUT,
+    type: oracledb.INTEGER
+  }
 
-//   new_client.id = {
-//     dir: oracledb.BIND_OUT,
-//     type: oracledb.INTEGER
-//   }
+  new_cart.create_date = {
+    dir: oracledb.BIND_OUT,
+    type: oracledb.DB_TYPE_TIMESTAMP
+  }
+
+  new_cart.cart_status_id = {
+    dir: oracledb.BIND_OUT,
+    type: oracledb.INTEGER
+  }
  
   const result = await database.simpleExecute(procedure_new_cart, new_cart);
  
-//   new_client.id = result.outBinds.id[0];
+  new_cart.id = result.outBinds.id;
+  new_cart.create_date = result.outBinds.create_date;
+  new_cart.cart_status_id = result.outBinds.cart_status_id;
  
   return new_cart;
 }

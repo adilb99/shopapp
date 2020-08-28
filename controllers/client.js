@@ -55,7 +55,9 @@ function getClientFromRec(req) {
       let new_client = getClientFromRec(req);
    
       new_client = await client.create(new_client);
-   
+
+      
+
       res.status(201).json(new_client);
     } catch (err) {
       next(err);

@@ -15,6 +15,28 @@ async function find(context) {
  
     query += " where id = :id";
   }
+
+  if(context.product_id) {
+    binds.product_id = context.product_id;
+
+    if(query.includes('where')) {
+      query += ' and product_id = :product_id';
+    } else {
+      query += ' where product_id = :product_id';
+    }
+
+  }
+
+  if(context.client_id) {
+    binds.client_id = context.client_id;
+
+    if(query.includes('where')) {
+      query += ' and client_id = :client_id';
+    } else {
+      query += ' where client_id = :client_id';
+    }
+
+  }
  
   const result = await database.simpleExecute(query, binds);
  
@@ -27,7 +49,7 @@ module.exports.find = find;
 
 const createSql = `
     BEGIN
-        new_review_byID(:client_id, :product_id, :rating, :title, :text);
+        new_review_byID(:client_id, :product_id, :rating, :title, :text, :id);
     END;
     `;
  
@@ -36,14 +58,14 @@ async function create(emp) {
     console.log(new_review);
 
 
-//   new_client.id = {
-//     dir: oracledb.BIND_OUT,
-//     type: oracledb.INTEGER
-//   }
+  new_review.id = {
+    dir: oracledb.BIND_OUT,
+    type: oracledb.INTEGER
+  }
  
   const result = await database.simpleExecute(createSql, new_review);
  
-//   new_client.id = result.outBinds.id[0];
+  new_review.id = result.outBinds.id;
  
   return new_review;
 }

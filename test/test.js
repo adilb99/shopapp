@@ -103,61 +103,112 @@ function testPOST(url, data) {
 function testPOSTord() {
 
     let cartID;
-    let clientID;
+    let ordID;
+    let addrID;
+    let cr_date;
+    let bill;
+    let ord_status_id;
+    let client_id;
+    let cart_date;
+    let in_data;
+    
 
     request(app)
         .get('/api/cart')
         .then(function(response){
             cartID = response.body[0]['ID'];
-            clientID = response.body[0]['CLIENT_ID'];
+            cart_date = response.body[0]['CREATE_DATE'];
+            in_data = {
+                cart_id: cartID, 
+                country: 'testCountry',
+                province_state: 'testState',
+                city: 'testCity',
+                street: 'testStreet',
+                house_no: '47',
+                zip: 'A15P5E1'
+            };
         });
 
     describe('POST /ord', function() {
         it('POST new ord', function(done) {
+
             request(app)
                 .post('/api/ord')
-                .send({
-                    cart_id: cartID, 
-                    country: 'testCountry',
-                    state: 'testState',
-                    city: 'testCity',
-                    street: 'testStreet',
-                    house: '47',
-                    zip: 'A15P5E1'
-                })
+                .send(in_data)
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(201)
                 .end(function(err, res) {
                     if (err){
-                        // console.log(res);
                         return done(err);
                     }
-                    
-                    
+
+                    ordID = parseInt(res.body.id, 10);
+                    addrID = parseInt(res.body.address_id, 10);
+                    cr_date = res.body.create_date;
+                    bill = parseInt(res.body.bill, 10);
+                    ord_status_id = parseInt(res.body.ord_status_id, 10);
+                    client_id = parseInt(res.body.client_id, 10);
                     done();
                 });
         });
 
         
-        var getID;
 
-        request(app)
-        .get('/api/sequence/SEQ_ORD')
-        .then(function(response){
-            getID = response.body.LAST_NUMBER;
-        });
-        
-
-        it('GET request to check validity', function(done) {
+        it('GET ord', function(done) {
             request(app)
-                .get('/api/ord/'.concat(getID))
+                .get('/api/ord/'.concat(ordID))
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
-                .expect(200, done);
+                .expect(200)
+                .expect({
+                    "ID": ordID,
+                    "CREATE_DATE": cr_date,
+                    "BILL": bill,
+                    "ADDRESS_ID": addrID,
+                    "ORD_STATUS_ID": ord_status_id,
+                    "CART_HISTORY_ID": cartID, 
+                    "CLIENT_ID": client_id
+                }, done);
         });
 
 
+        it('GET address', function(done) {
+            request(app)
+                .get('/api/address/'.concat(addrID))
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200)
+                .expect({
+                    "ID": addrID,
+                    "COUNTRY": in_data.country,
+                    "PROVINCE_STATE": in_data.province_state,
+                    "CITY": in_data.city,
+                    "STREET": in_data.street,
+                    "HOUSE_NO": in_data.house_no,
+                    "ZIP": in_data.zip
+                }, done);
+        });
+
+
+        it('GET to check if cart was deleted', function(done){
+            request(app)
+                .get('/api/cart/'.concat(cartID))
+                .expect(404, done);
+
+        });
+
+        it('GET to check if cart was moved to history', function(done){
+            request(app)
+                .get('/api/cart_history/'.concat(cartID))
+                .expect(200)
+                .expect({
+                   "ID": cartID,
+                   "CART_STATUS_ID": 3,
+                   "CLIENT_ID": client_id,
+                   "CREATE_DATE": cart_date
+                }, done);
+        });
 
     });
 
@@ -417,33 +468,107 @@ describe.skip('Black-Box request testing: ', function() {
 
 describe('User Scenario 1 (Valid)', function() {
     
+    let clientID;
+    let cartID;
+
+    describe('Register User', function(){
+        
+        let getID;
+        var new_date;
+
+        const logeen = 'randomLogin'.concat(Math.floor(Math.random() * 101));
+
+        const data = {
+            first_name: 'Adil',
+            second_name: 'Botabekov',
+            login: logeen,
+            pass: 'simplepass',
+            email: 'adilb99@kaist.ac.kr',
+            phone_num: 9999,
+            birth_date: '1999/12/02'
+        };
+
+        const put_data = {
+            first_name: 'editedName',
+            second_name: 'editedSurname',
+            login: 'editedLogin123123',
+            pass: 'editedPass',
+            email: 'adilb99@kaist.ac.kr',
+            phone_num: 9991,
+            birth_date: '1988/11/03'
+        };
+        
+        it('(POST new client)', function(done){
+            request(app)
+                    .post('/api/client')
+                    .send(data)
+                    .set('Accept', 'application/json')
+                    .expect('Content-Type', /json/)
+                    .expect(201)
+                    .end(function(err, res) {
+                        if (err){
+                            return done(err);
+                        }
+                        getID = res.body.id;
+                        new_date = res.body.birth_date;
+                        clientID = getID;
+                        done();
+                    });
+
+        });
 
 
-    it('Register user (POST new client)', function(done){
-        request(app)
-                .post('/api/client')
-                .send({
-                    first_name: 'Adil',
-                    second_name: 'Botabekov',
-                    login: 'adilb999'.concat(Math.floor(Math.random() * 101)),
-                    pass: 'simplepass',
-                    email: 'adilb99@kaist.ac.kr',
-                    phone_num: 9999,
-                    birth_date: '1999/12/02'
-                })
+        it('GET client to check', function(done){
+            request(app)
+                .get('/api/client/'.concat(getID))
+                .expect(200)
+                .expect({
+                    "ID": getID,
+                    "FIRST_NAME": data.first_name,
+                    "SECOND_NAME": data.second_name,
+                    "EMAIL": data.email,
+                    "LOGIN": logeen,
+                    "PASS": data.pass,
+                    "PHONE_NUM": data.phone_num,
+                    "BIRTH_DATE": new_date
+                }, done);
+        });
+
+        it('PUT req -> client', function(done){
+            request(app)
+                .put('/api/client/'.concat(getID))
+                .send(put_data)
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
-                .expect(201)
-                .end(function(err, res) {
-                    if (err){
-                        // console.log(res);
-                        return done(err);
+                .expect(200, function(err, res){
+                    if(err){
+                        done(err);
                     }
-                    // console.log(res.body);
+                    new_date = res.body.birth_date;
                     done();
                 });
+        });
+
+        it('GET req to check PUT', function(done){
+            request(app)
+                .get('/api/client/'.concat(getID))
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200)
+                .expect({
+                    "ID": getID,
+                    "FIRST_NAME": put_data.first_name,
+                    "SECOND_NAME": put_data.second_name,
+                    "EMAIL": put_data.email,
+                    "LOGIN": put_data.login,
+                    "PASS": put_data.pass,
+                    "PHONE_NUM": put_data.phone_num,
+                    "BIRTH_DATE": new_date
+                }, done);
+        });
 
     });
+    
 
 
     it('View all products', function(done){
@@ -464,11 +589,65 @@ describe('User Scenario 1 (Valid)', function() {
     });
 
 
-    it('Create cart (POST new cart)', function(done){
-        request(app)
-                .post('/api/cart')
+    describe('Create cart', function(){
+        
+        let getID;
+        
+        it('Create cart (POST new cart)', function(done){
+            request(app)
+                    .post('/api/cart')
+                    .send({
+                        client_id: clientID,
+                    })
+                    .set('Accept', 'application/json')
+                    .expect('Content-Type', /json/)
+                    .expect(201)
+                    .end(function(err, res) {
+                        if (err){
+                            // console.log(res);
+                            return done(err);
+                        }
+
+                        getID = res.body.id;
+                        cartID = getID;
+                        done();
+                    });
+        });
+
+        
+        it('GET request to check', function(done){
+            request(app)
+                .get('/api/cart/'.concat(getID))
+                .expect(200, function(err, res){
+                    if(err) {
+                        done(err);
+                    }
+
+
+                    assert(res.body.ID == getID, 'id mismatch');
+                    assert(res.body.CART_STATUS_ID == 1, 'status id mismatch');
+                    assert(res.body.CLIENT_ID == clientID, 'client id mismatch');
+
+                    done();
+                });
+        });
+
+
+    });
+
+    
+
+    describe('Populate the cart', function(){
+
+        let getID;
+
+        it('Populate the cart with selected product (POST)', function(done){
+            request(app)
+                .post('/api/cart_content')
                 .send({
-                    client_id: 1,
+                    quantity: 1,
+                    product_id: 14,
+                    cart_id: cartID
                 })
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
@@ -478,78 +657,74 @@ describe('User Scenario 1 (Valid)', function() {
                         // console.log(res);
                         return done(err);
                     }
+
+                    getID = res.body.id;
+
                     done();
                 });
+        });
+
+        it('GET req to check', function(done){
+            request(app)
+                .get('/api/cart_content/'.concat(getID))
+                .expect(200, function(err,res){
+                    if(err){
+                        done(err);
+                    }
+
+                    assert(res.body.ID == getID, 'id mismatch');
+                    assert(res.body.CART_ID == cartID, 'cart id mismatch');
+                    assert(res.body.PRODUCT_ID == 14, 'product id mismatch');
+                    assert(res.body.QUANTITY == 1, 'quantity mismatch');
+                    
+                    done();
+
+                });
+        });
+
     });
 
-
-    it('Populate the cart with selected product (POST)', function(done){
-        request(app)
-            .post('/api/cart_content')
-            .send({
-                quantity: 1,
-                product_id: 14,
-                cart_id: 370
-            })
-            .set('Accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(201)
-            .end(function(err, res) {
-                if (err){
-                    // console.log(res);
-                    return done(err);
-                }
-                done();
-            });
-    });
-
-
-    it.skip('Complete order (POST)', function(done){
-        request(app)
-            .post('/api/ord')
-            .send({
-                cart_id: 353,
-                country: 'KZ',
-                state: 'Alm Obl',
-                city: 'Almaty',
-                street: 'Satpayeva',
-                house: '47',
-                zip: 'A15P5E1'
-            })
-            .set('Accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(201)
-            .end(function(err, res) {
-                if (err){
-                    // console.log(res);
-                    return done(err);
-                }
-                done();
-            });
-            
-    });
 
     testPOSTord();
 
     // CHECK IF CART IS DELETED AND PUT INTO HISTORY
 
-    it('Deliver order (PUT)', function(done){
-        request(app)
-            .put('/api/ord/304')
-            .send({
-                ord_status_id: 3
-            })
-            .set('Accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(200)
-            .end(function(err, res) {
-                if (err){
-                    // console.log(res);
-                    return done(err);
-                }
-                done();
-            });
+    describe('Deliver order', function(){
+
+        it('(PUT order)', function(done){
+            request(app)
+                .put('/api/ord/304')
+                .send({
+                    ord_status_id: 3
+                })
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200)
+                .end(function(err, res) {
+                    if (err){
+                        // console.log(res);
+                        return done(err);
+                    }
+                    done();
+                });
+        });
+
+        it('GET request to check', function(done){
+            request(app)
+                .get('/api/ord/304')
+                .expect(200, function(err, res){
+                    if(err){
+                        done(err);
+                    }
+
+                    assert(res.body.ORD_STATUS_ID == 3, 'status mismatch');
+                    done();
+
+                });
+        });
+
     });
+    
 
 });
 
@@ -678,3 +853,122 @@ describe('testing with stubs', function(){
 
 
 });
+
+
+describe('Register User, Edit data and Delete user', function(){
+        
+    let getID;
+    var new_date;
+
+    const logeen = 'randomLogin'.concat(Math.floor(Math.random() * 101));
+
+    const data = {
+        first_name: 'Adil',
+        second_name: 'Botabekov',
+        login: logeen,
+        pass: 'simplepass',
+        email: 'adilb99@kaist.ac.kr',
+        phone_num: 9999,
+        birth_date: '1999/12/02'
+    };
+
+    const put_data = {
+        first_name: 'editedName',
+        second_name: 'editedSurname',
+        login: 'editedLogin123123',
+        pass: 'editedPass',
+        email: 'adilb99@kaist.ac.kr',
+        phone_num: 9991,
+        birth_date: '1988/11/03'
+    };
+    
+    it('(POST new client)', function(done){
+        request(app)
+                .post('/api/client')
+                .send(data)
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(201)
+                .end(function(err, res) {
+                    if (err){
+                        return done(err);
+                    }
+                    getID = res.body.id;
+                    new_date = res.body.birth_date;
+
+                    done();
+                });
+
+    });
+
+
+    it('GET client to check', function(done){
+        request(app)
+            .get('/api/client/'.concat(getID))
+            .expect(200)
+            .expect({
+                "ID": getID,
+                "FIRST_NAME": data.first_name,
+                "SECOND_NAME": data.second_name,
+                "EMAIL": data.email,
+                "LOGIN": logeen,
+                "PASS": data.pass,
+                "PHONE_NUM": data.phone_num,
+                "BIRTH_DATE": new_date
+            }, done);
+    });
+
+    it('PUT req -> client', function(done){
+        request(app)
+            .put('/api/client/'.concat(getID))
+            .send(put_data)
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(200, function(err, res){
+                if(err){
+                    done(err);
+                }
+                new_date = res.body.birth_date;
+                done();
+            });
+    });
+
+    it('GET req to check PUT', function(done){
+        request(app)
+            .get('/api/client/'.concat(getID))
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(200)
+            .expect({
+                "ID": getID,
+                "FIRST_NAME": put_data.first_name,
+                "SECOND_NAME": put_data.second_name,
+                "EMAIL": put_data.email,
+                "LOGIN": put_data.login,
+                "PASS": put_data.pass,
+                "PHONE_NUM": put_data.phone_num,
+                "BIRTH_DATE": new_date
+            }, done);
+    });
+
+
+    describe('delete client', function(){
+        it('DELETE request', function(done){
+            request(app)
+                .delete('/api/client/'.concat(getID))
+                .expect(204, done);
+        });
+
+
+        it('GET /client to check', function(done){
+            request(app)
+                .get('/api/client/'.concat(getID))
+                .expect(404, done);
+        });
+
+
+    });
+
+});
+
+
